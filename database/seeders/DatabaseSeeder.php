@@ -16,24 +16,26 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            RolesSeeder::class,
-            UsersSeeder::class,
             ActivitiesSeeder::class,
             ApisSeeder::class,
-            ChargesSeeder::class,
+            RolesSeeder::class,
+            UsersSeeder::class,
+            CategoriesSeeder::class,
+            ProductsSeeder::class,
+            
         ]);
 
         
-        Product::factory()->count(20)->create();
-        Category::factory()->count(5)->create();
+        // Product::factory()->count(20)->create();
+        // Category::factory()->count(5)->create();
 
-        $categories = Category::all();
+        // $categories = Category::all();
 
-        Product::all()->each(function($product) use ($categories) {
-            $product->categories()->attach(
-                $categories->random(2)->pluck('id')->toArray()
-            );
-        });
+        // Product::all()->each(function($product) use ($categories) {
+        //     $product->categories()->attach(
+        //         $categories->random(2)->pluck('id')->toArray()
+        //     );
+        // });
         
     }
 }

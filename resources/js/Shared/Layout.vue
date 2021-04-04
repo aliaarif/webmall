@@ -67,20 +67,15 @@
       <v-tabs>
         <v-tab class="inertia-link" link>
           <inertia-link href="/" class="inertia-link">
-            APPLICATION NAME
+            WEBMALL
           </inertia-link>
         </v-tab>
         <v-spacer></v-spacer>
-        <!-- <v-autocomplete
-        class="mt-7"
-        hide-details
-        prepend-icon="mdi-magnify"
-        single-line
-      ></v-autocomplete> -->
-
-        <!-- <v-tab v-if="auth">
-        <inertia-link href="/sign-out" method="post" as="button" type="button">Sign Out</inertia-link>
-    </v-tab> -->
+     <v-tab class="inertia-link" link >
+          <inertia-link href="cart" class="inertia-link">
+            <i class="material-icons"> cart </i></inertia-link
+          >
+        </v-tab>
 
         <v-tab v-if="auth" class="mr-n1">
           <v-menu

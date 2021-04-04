@@ -16,6 +16,7 @@ use App\Models\User;
 use Mail;
 use Session;
 use Config;
+use App\Models\Product;
 use Inertia\Inertia;
 use Auth;
 
@@ -31,9 +32,9 @@ class WelcomeController extends Controller
     public function __construct()
     {
         // $moduleRoute = [];
-        //  foreach(Config::get('modules', 'default') as $module){
+        //  foreach(Product::all() as $module){
         //     $data = [
-        //         'modules' => Config::get('modules', 'default'),
+        //         'products' => Product::all(),
         //         'page_title' => env('APP_NAME', 'Application').' | Home'
         //         ];
 
@@ -45,32 +46,52 @@ class WelcomeController extends Controller
     {
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
-            'title' => env('APP_NAME', 'Application').' | Home',
+            'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
 
         $data = [
             'meta' => $meta,
-            'modules' => Config::get('modules', 'default'),
+            'products' => Product::take(20)->get(),
             'auth' => $user
         ];
 
         return Inertia::render('Welcome', $data);
     }
 
-      public function dashboard()
+    public function details($slug)
     {
 
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
-            'title' => env('APP_NAME', 'Application').' | Dashboard',
+            'title' => env('APP_NAME', 'Application') . ' | Home',
+            'description' => 'This is dummy description for the Application from dynamic'
+        ];
+        $product = Product::where('slug', $slug)->first();
+
+        $data = [
+            'meta' => $meta,
+            'products' => Product::take(20)->get(),
+            'auth' => $user,
+            'product' => $product
+        ];
+
+        return Inertia::render('Details', $data);
+    }
+
+    public function dashboard()
+    {
+
+        $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
+        $meta = [
+            'title' => env('APP_NAME', 'Application') . ' | Dashboard',
             'description' => 'This is dummy description for the Application dashboard'
         ];
 
         $data = [
             'meta' => $meta,
             'auth' => $user,
-            'modules' => Config::get('modules', 'default'),
+            'products' => Product::all(),
         ];
 
         return Inertia::render('Dashboard', $data);
@@ -80,35 +101,37 @@ class WelcomeController extends Controller
 
 
 
-    public function businessSchoolApplicationFee(){
+    public function businessSchoolApplicationFee()
+    {
 
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
-            'title' => 'Business School Application Fee | '.env('APP_NAME', 'Application'),
+            'title' => 'Business School Application Fee | ' . env('APP_NAME', 'Application'),
             'description' => 'This is dummy description for the Application from dynamic'
         ];
 
         $data = [
             'meta' => $meta,
             'auth' => $user,
-            'modules' => Config::get('modules', 'default'),
+            'products' => Product::all(),
             'tab' => Session::get('tab') ?? 'Login Panel'
         ];
 
         return Inertia::render('BusinessSchoolApplicationFee', $data);
     }
 
-    public function libraryPayments(Request $request){
+    public function libraryPayments(Request $request)
+    {
         $module = 'charges';
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')
-        ->when($module, function ($q) use ($module) {
-            return $q->with($module);
-        })
-        ->first()
-         : false;
+            ->when($module, function ($q) use ($module) {
+                return $q->with($module);
+            })
+            ->first()
+            : false;
 
         $meta = [
-            'title' => 'Library Payments | '.env('APP_NAME', 'Application'),
+            'title' => 'Library Payments | ' . env('APP_NAME', 'Application'),
             'description' => 'This is dummy description for the Application from dynamic'
         ];
 
@@ -116,7 +139,7 @@ class WelcomeController extends Controller
             'meta' => $meta,
             'auth' => $user,
             'tab' => Session::get('tab') ?? 'Login Panel',
-            'sessions' => $request->session()->all(), 
+            'sessions' => $request->session()->all(),
             'responseStatus' => Session::get('status') ?? false
         ];
 

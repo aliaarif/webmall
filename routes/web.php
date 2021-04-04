@@ -7,27 +7,13 @@ use App\Http\Controllers\AuthController;
 
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\PDFController;
-use App\Http\Controllers\DirectDebitApiController;
-use App\Http\Controllers\StudentDepositController;
-use App\Http\Controllers\BusinessSchoolController;
-use App\Http\Controllers\BusinessSchoolStudyToursController;
 use App\Http\Controllers\LibraryPaymentsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CronJobController;
-use App\Http\Controllers\CampusCardController;
-use App\Http\Controllers\PrintCreditsController;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
-use App\Http\Controllers\EventsDurhamController;
-use App\Http\Controllers\CateringController;
-use App\Http\Controllers\AccommodationController;
-use App\Http\Controllers\ExtrasController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\FieldsController;
-use App\Http\Controllers\URLsController;
-use App\Http\Controllers\EventBookingController;
-use App\Http\Controllers\CollegeCommonRoomsController;
-use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\CartController;
+
 use Symfony\Component\HttpFoundation\Session\Session as HttpFoundationSessionSession;
 
 
@@ -35,9 +21,10 @@ use Laravel\Socialite\Facades\Socialite;
 use Inertia\Inertia;
 
 
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index')->middleware('auth');
+Route::post('/add-to-cart', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
 
-
-
+Route::get('/{slug}' , [WelcomeController::class,'details'])->name('details');
 
 Route::get('/' , [WelcomeController::class,'welcome'])->name('welcome');
 Route::get('dashboard' , [WelcomeController::class,'dashboard'])->name('dashboard')->middleware('auth');
@@ -57,11 +44,11 @@ Route::prefix('sign-in')->group(function(){
 
 
 
-Route::middleware([])->group(function(){
-foreach(Config::get('modules', 'default') as $module){
-    Route::get($module['route'] , [WelcomeController::class, $module['getMethod']])->name($module['getMethod']);
-}
-});
+// Route::middleware([])->group(function(){
+// foreach(Config::get('modules', 'default') as $module){
+//     Route::get($module['route'] , [WelcomeController::class, $module['getMethod']])->name($module['getMethod']);
+// }
+// });
 
 // Start Library Payments Routes
 //Route::get('/library-payments', [LibraryPaymentsController::class, 'lpLogin'])->name('lp.login');

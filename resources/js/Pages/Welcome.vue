@@ -1,5 +1,5 @@
 <template>
-  <layout :meta="meta" :auth="auth" :modules="modules">
+  <layout :meta="meta" :auth="auth" :products="products">
     <v-carousel
       cycle
       height="200"
@@ -16,7 +16,7 @@
     </v-carousel>
 
     <div align="center" class="pa-1 d-flex justify-center text-h5">
-      Welcome to Durham University’s Event Booking and Payment System
+      Welcome to Webmall! A MultiSeller Ecommerce Platform 
     </div>
     <p align="center" class="pa-1 d-flex justify-center">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -24,59 +24,6 @@
       veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
       commodo consequat.
     </p>
-
-    <!-- <v-toolbar
-      color="deep-purple accent-4"
-    dark
-    >
-      <template v-slot:extension>
-        <v-tabs
-          v-model="currentItem"
-          fixed-tabs
-          slider-color="white"
-        >
-          <v-tab
-            v-for="item in items"
-            :key="item"
-            :href="'#tab-' + item"
-          >
-            {{ item }}
-          </v-tab>
-
-          <v-menu
-            v-if="more.length"
-            bottom
-            left
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                text
-                class="align-self-center mr-4"
-                v-bind="attrs"
-                v-on="on"
-              >
-                more
-                <v-icon right>
-                  mdi-menu-down
-                </v-icon>
-              </v-btn>
-            </template>
-
-            <v-list class="grey lighten-3">
-              <v-list-item
-                v-for="item in more"
-                :key="item"
-                @click="addItem(item)"
-              >
-                {{ item }}
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-tabs>
-      </template>
-    </v-toolbar> -->
-
-    <!-- <v-container class="grey lighten-5"> -->
     <v-row class="mt-1">
       <v-col
         cols="12"
@@ -85,7 +32,7 @@
         md="4"
         sm="6"
         xs="12"
-        v-for="(module, index) in modules"
+        v-for="(product, index) in products"
         :key="index"
       >
         <v-hover v-slot="{ hover }" open-delay="0">
@@ -96,7 +43,7 @@
           >
             <v-img
               :aspect-ratio="16 / 9"
-              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
+              :src="product.cover_img"
             >
               <v-expand-transition>
                 <div
@@ -106,7 +53,7 @@
                 >
                   <inertia-link
                     class="inertia-link white--text"
-                    :href="module.route"
+                    :href="product.slug"
                   >
                     <v-btn color="white darken-4" text> View Details </v-btn>
                   </inertia-link>
@@ -122,19 +69,20 @@
                 small
                 right
                 top
+                @click="addToCart(product.id)"
               >
                 <v-icon>mdi-cart</v-icon>
               </v-btn>
               <v-card-title>
-                {{ module.menu }}
+                {{ product.name }}
               </v-card-title>
 
-              <v-card-subtitle>
-                {{ module.desc }}
-              </v-card-subtitle>
+              <!-- <v-card-subtitle>
+                {{ product.description }}
+              </v-card-subtitle> -->
 
               <v-card-actions>
-                <inertia-link class="inertia-link" :href="module.route">
+                <inertia-link class="inertia-link" :href="product.slug">
                   <v-btn color="primary" text> View Details </v-btn>
                 </inertia-link>
 
@@ -146,18 +94,18 @@
                   fab
                   x-small
                   icon
-                  @click="showMore(module.title), (show = !show)"
+                  @click="showMore(product.slug), (show = !show)"
                 >
                   ...
                 </v-btn>
               </v-card-actions>
 
               <v-expand-transition>
-                <div v-if="show && showFor === module.title">
+                <div v-if="show && showFor === product.slug">
                   <v-divider></v-divider>
 
                   <v-card-text>
-                    {{ module.desc }}
+                    {{ product.description }}
                   </v-card-text>
                 </div>
               </v-expand-transition>
@@ -171,8 +119,9 @@
 </template>
 <script>
 import Layout from "../Shared/Layout";
+import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "modules"],
+  props: ["meta", "auth", "products"],
   components: {
     Layout,
   },
@@ -209,17 +158,16 @@ export default {
 
   methods: {
     showMore(item) {
-      //this.show = !this.show;
       this.showFor = item;
     },
-    addItem(item) {
-      const removed = this.items.splice(0, 1);
-      this.items.push(...this.more.splice(this.more.indexOf(item), 1));
-      this.more.push(...removed);
-      this.$nextTick(() => {
-        this.currentItem = "tab-" + item;
-      });
-    },
+    addToCart(productId){
+      var data = { productId: productId};
+       Inertia.post("/add-to-cart", data, {
+          onSuccess: (res) => {
+             console.log(res);
+          },onError: (errors) => {},
+        });
+    }
   },
 };
 </script>

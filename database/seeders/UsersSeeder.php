@@ -22,9 +22,8 @@ class UsersSeeder extends Seeder
             ['name' => 'Admin', 'email' =>  'admin@example.com'],
             ['name' => 'Manager', 'email' =>  'manager@example.com'],
             ['name' => 'User', 'email' =>  'user@example.com'],
-            ['name' => 'Client', 'email' =>  'client@example.com'],
-            ['name' => 'Employee', 'email' =>  'employee@example.com'],
-            ['name' => 'Staff', 'email' =>  'staff@example.com'],
+            ['name' => 'Seller', 'email' =>  'seller@example.com'],
+            
 
         ];
         foreach($users as $data)
@@ -32,7 +31,7 @@ class UsersSeeder extends Seeder
             $user = User::create([
                'name' => $data['name'],
                'email' => $data['email'],
-               'avatar' => env('APP_URL', 'http://127.0.0.1:8000').'/img/avatars/default-avatar.svg',
+               'avatar' => env('APP_URL', 'http://webmall').'/img/avatars/default.svg',
                'password' => Hash::make('password')
             ]);
             $userDetails = UserDetail::create(['user_id' => $user->id]);
