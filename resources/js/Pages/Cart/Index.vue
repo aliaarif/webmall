@@ -1,5 +1,5 @@
 <template>
-  <layout :meta="meta" :auth="auth">
+  <layout :meta="meta" :auth="auth" :cartItems="cartItems">
     <v-card flat>
             <v-card-text>
               <h4>Your Cart</h4>

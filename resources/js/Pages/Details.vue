@@ -1,5 +1,5 @@
 <template>
-  <layout :meta="meta" :auth="auth">
+  <layout :meta="meta" :auth="auth" :cartItems="cartItems">
     <v-card>
       <v-toolbar color="primary" dark>
         <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
@@ -140,7 +140,7 @@ import Layout from "../Shared/Layout";
 import { StripeCheckout } from '@vue-stripe/vue-stripe';
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "tab", "suitsItems", "responseStatus", "sessions"],
+  props: ["meta", "auth", "tab", "suitsItems", "responseStatus", "sessions", "catItems"],
   components: {
     Layout,
     StripeCheckout

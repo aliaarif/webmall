@@ -1,5 +1,5 @@
 <template>
-  <layout :meta="meta" :auth="auth" :products="products">
+  <layout :meta="meta" :auth="auth" :products="products" :cartItems="cartItems">
     <v-carousel
       cycle
       height="200"
@@ -121,39 +121,21 @@
 import Layout from "../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "products"],
+  props: ["meta", "auth", "products", "cartItems"],
   components: {
     Layout,
   },
   data: () => ({
     colors: ["#68246D", "#68246D", "#68246D", "#68246D", "#68246D"],
     slides: ["First", "Second", "Third", "Fourth", "Fifth"],
-
-    currentItem: "tab-Web",
-    items: [
-      "PG Admissions Application Fee",
-      "Business School Study Tours",
-      "Campus Card Replacement",
-      "Common Rooms",
-      "Event Durham",
-    ],
-    more: [
-      "Student Recruitment",
-      "Direct Debits",
-      "Languages For All",
-      "Library Payments",
-      "Print Credit Purchase",
-      "Student Deposits",
-      "Student Document Registry Shop",
-    ],
-    text:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     show: false,
     showFor: "",
+
   }),
 
   created() {
-    //alert(this.auth);
+    //let a = (array) this.cartItems;
+    console.log(this.cartItems);
   },
 
   methods: {
@@ -161,10 +143,20 @@ export default {
       this.showFor = item;
     },
     addToCart(productId){
+      //let event = new Event("hello", {bubbles: true}); // (2)
+  
+      
+
+      //event.preventDefault();
       var data = { productId: productId};
        Inertia.post("/add-to-cart", data, {
           onSuccess: (res) => {
+            // if(res.data.status){
+            //   this.cartItems = res.data.cartItems
+            // }
+            //event.preventDefault();
              console.log(res);
+             
           },onError: (errors) => {},
         });
     }

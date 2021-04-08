@@ -4,7 +4,7 @@
   <v-app>
     <v-navigation-drawer
       app
-      v-if="auth && auth.roles[0].name !== 'Admin' && drawer"
+      v-if="auth && auth.roles[0].name === 'Admin' && drawer"
       class="primary"
       dark
       permanent
@@ -17,7 +17,7 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>{{ auth.name }} Chauhan</v-list-item-title>
+            <v-list-item-title>{{ auth.name }}</v-list-item-title>
             <v-list-item-subtitle>{{
               auth.roles[0].name
             }}</v-list-item-subtitle>
@@ -61,7 +61,7 @@
 
     <v-app-bar dense app>
       <v-app-bar-nav-icon
-        v-if="auth && auth.roles[0].name !== 'Admin'"
+        v-if="auth && auth.roles[0].name === 'Admin'"
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
       <v-tabs>
@@ -71,10 +71,16 @@
           </inertia-link>
         </v-tab>
         <v-spacer></v-spacer>
-     <v-tab class="inertia-link" link >
-          <inertia-link href="cart" class="inertia-link">
-            <i class="material-icons"> cart </i></inertia-link
-          >
+     <v-tab class="inertia-link" link v-if="cartItems > 0">
+      <inertia-link href="/cart" class="inertia-link">
+        <v-badge
+          color="primary"
+          :content="cartItems"
+          class="mt-4"
+        >
+        <v-icon color="primary">mdi-cart</v-icon>
+        </v-badge>
+        </inertia-link>
         </v-tab>
 
         <v-tab v-if="auth" class="mr-n1">
@@ -97,7 +103,7 @@
                 <v-list-item-avatar>
                     <v-img :src="auth.avatar" :alt="auth.name"></v-img>
                 </v-list-item-avatar>
-                {{ auth.name }}
+               &nbsp; {{ auth.name }} &nbsp;
               </v-btn>
             </template>
 
@@ -126,27 +132,12 @@
         </v-tab>
       </v-tabs>
     </v-app-bar>
-    <!-- <v-breadcrumbs
-  divider="/"
-></v-breadcrumbs>
-
-<v-autocomplete
-  dense
-></v-autocomplete> -->
-
-    <!-- Sizes your content based upon application components -->
     <v-main>
-      <!-- Provides the application the proper gutter -->
       <v-container fluid>
-        <!-- If using vue-router -->
-        <!-- <router-view></router-view> -->
         <slot />
       </v-container>
     </v-main>
-
-    <v-footer app>
-      <!-- -->
-    </v-footer>
+    <v-footer app></v-footer>
   </v-app>
 </template>
 <style scoped>
@@ -169,17 +160,13 @@
 </style>
 <script>
 export default {
-  props: ["meta", "auth", "modules"],
+  props: ["meta", "auth", "modules", "cartItems"],
   data: () => ({
     drawer: false,
     btns: [["Removed", "0"]],
     colors: ["primary"],
     items: [...Array(4)].map((_, i) => `Item ${i}`),
   }),
-  created() {
-    //this.auth = localStorage.getItem("auth") ?? this.auth;
-    //alert(this.auth);
-  },
   methods: {
     logout() {
       let loggedOut = this.$inertia.post("logout") ? true : false;

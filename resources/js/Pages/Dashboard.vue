@@ -1,5 +1,5 @@
 <template>
-  <layout :meta="meta" :auth="auth" :modules="modules">
+  <layout :meta="meta" :auth="auth" :modules="modules" :cartItems="cartItems">
     <div align="center" class="pa-1 d-flex justify-center text-h6">
       Hi, {{ auth.name }} - {{ auth.roles[0].name }}, Welcome to dashboard
     </div>
@@ -64,7 +64,7 @@
 <script>
 import Layout from "../Shared/Layout";
 export default {
-  props: ["meta", "auth", "modules"],
+  props: ["meta", "auth", "modules", "catItems"],
   components: {
     Layout,
   },

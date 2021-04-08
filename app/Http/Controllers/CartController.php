@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Auth;
 use App\Models\Role;
 use App\Models\User;
+use Session;
 
 class CartController extends Controller
 {
@@ -28,8 +29,25 @@ class CartController extends Controller
                 'attributes' => array(),
                 'associatedModel' => $product
             ));
+            $cartItems = \Cart::session(Auth::id() ?? '_token')->getTotalQuantity() ?? 0;
 
-            return redirect()->route('cart.index');
+            // return response()->json(['status' => true, 'cartItems' => $cartItems]);
+
+            // // $cartItemsTotalAr = [];
+            // // $total = 0;
+            // // foreach($cartItems as $cartItem){
+            // //     array_push($cartItemsTotalAr, $cartItem->quantity);
+            // // }
+
+            // // foreach($cartItemsTotalAr as $qty){
+            // //     $total += $qty; 
+            // // }
+
+
+            // //dd(array_sum($cartItemsTotalAr));
+            // //dd($cartItemsTotalAr);
+
+            return back()->with(['cartItems' => $cartItems]);
 
         }
     }

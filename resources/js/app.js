@@ -5,6 +5,7 @@ import { App, plugin } from '@inertiajs/inertia-vue'
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-load
 import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
+Vue.prototype.$scrollToTop = () => window.scrollTo(0,0)
 
 
 import Vuetify from 'vuetify'

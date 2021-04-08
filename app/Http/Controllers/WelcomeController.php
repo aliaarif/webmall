@@ -49,11 +49,14 @@ class WelcomeController extends Controller
             'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
+        $cartItems = \Cart::session(Auth::id() ?? '_token')->getTotalQuantity() ?? 0;
+        
 
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
-            'auth' => $user
+            'auth' => $user,
+            'cartItems' => $cartItems
         ];
 
         return Inertia::render('Welcome', $data);
@@ -68,12 +71,16 @@ class WelcomeController extends Controller
             'description' => 'This is dummy description for the Application from dynamic'
         ];
         $product = Product::where('slug', $slug)->first();
+        $cartItems = \Cart::session(Auth::id() ?? '_token')->getTotalQuantity() ?? 0;
+        
 
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
             'auth' => $user,
-            'product' => $product
+            'product' => $product,
+            'cartItems' => $cartItems
+            
         ];
 
         return Inertia::render('Details', $data);
@@ -87,62 +94,16 @@ class WelcomeController extends Controller
             'title' => env('APP_NAME', 'Application') . ' | Dashboard',
             'description' => 'This is dummy description for the Application dashboard'
         ];
+        $cartItems = \Cart::session(Auth::id() ?? '_token')->getTotalQuantity() ?? 0;
 
         $data = [
             'meta' => $meta,
             'auth' => $user,
             'products' => Product::all(),
+            'cartItems' => $cartItems
         ];
 
         return Inertia::render('Dashboard', $data);
     }
 
-
-
-
-
-    public function businessSchoolApplicationFee()
-    {
-
-        $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
-        $meta = [
-            'title' => 'Business School Application Fee | ' . env('APP_NAME', 'Application'),
-            'description' => 'This is dummy description for the Application from dynamic'
-        ];
-
-        $data = [
-            'meta' => $meta,
-            'auth' => $user,
-            'products' => Product::all(),
-            'tab' => Session::get('tab') ?? 'Login Panel'
-        ];
-
-        return Inertia::render('BusinessSchoolApplicationFee', $data);
-    }
-
-    public function libraryPayments(Request $request)
-    {
-        $module = 'charges';
-        $user = Auth::check() ? User::where('id', Auth::id())->with('roles')
-            ->when($module, function ($q) use ($module) {
-                return $q->with($module);
-            })
-            ->first()
-            : false;
-
-        $meta = [
-            'title' => 'Library Payments | ' . env('APP_NAME', 'Application'),
-            'description' => 'This is dummy description for the Application from dynamic'
-        ];
-
-        $data = [
-            'meta' => $meta,
-            'auth' => $user,
-            'tab' => Session::get('tab') ?? 'Login Panel',
-            'sessions' => $request->session()->all(),
-            'responseStatus' => Session::get('status') ?? false
-        ];
-
-        return Inertia::render('LibraryPayments', $data);
-    }
 }

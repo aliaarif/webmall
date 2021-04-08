@@ -24,7 +24,7 @@ use Inertia\Inertia;
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index')->middleware('auth');
 Route::post('/add-to-cart', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
 
-Route::get('/{slug}' , [WelcomeController::class,'details'])->name('details');
+Route::get('/{slug}' , [WelcomeController::class,'details'])->where('slug', '!=', 'login')->name('details');
 
 Route::get('/' , [WelcomeController::class,'welcome'])->name('welcome');
 Route::get('dashboard' , [WelcomeController::class,'dashboard'])->name('dashboard')->middleware('auth');
