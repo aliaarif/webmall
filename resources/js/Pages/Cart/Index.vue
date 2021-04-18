@@ -45,10 +45,10 @@ export default {
     selected: [],
     headers: [
       { 
-        text: "Reference",
+        text: "Image",
         align: "start",
         sortable: false,
-        value: "session_id" 
+        value: "cover_img" 
       },
       {
         text: "Name",
@@ -59,13 +59,13 @@ export default {
         value: "quantity" 
       },
       { 
-        text: "Unit Price($)",
+        text: "Price($)",
         value: "price" 
       },
-      { 
-        text: "Total($)",
-        value: "total" 
-      }
+      // { 
+      //   text: "Total($)",
+      //   value: "total" 
+      // }
     ],
    
   }),

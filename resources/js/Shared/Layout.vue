@@ -72,7 +72,7 @@
         </v-tab>
         <v-spacer></v-spacer>
      <v-tab class="inertia-link" link v-if="cartItems > 0">
-      <inertia-link href="/cart" class="inertia-link">
+      <inertia-link href="/basket" class="inertia-link">
         <v-badge
           color="primary"
           :content="cartItems"

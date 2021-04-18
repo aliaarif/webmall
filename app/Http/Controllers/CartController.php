@@ -53,7 +53,7 @@ class CartController extends Controller
     }
 
 
-    public function index()
+    public function cart()
     {
 
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
@@ -80,6 +80,36 @@ class CartController extends Controller
         ];
 
         return Inertia::render('Cart/Index', $data);
+    }    
+
+
+    public function basket()
+    {
+
+        $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
+        $meta = [
+            'title' => env('APP_NAME', 'Application') . ' | Home',
+            'description' => 'This is dummy description for the Application from dynamic'
+        ];
+
+        // view the cart items
+        $items = \Cart::session(Auth::id())->getContent();
+
+        $cartItems = [];
+        foreach($items as $row) {array_push($cartItems, $row);}
+
+        //return $cartItems;
+
+        
+
+        $data = [
+            'meta' => $meta,
+            'products' => Product::take(20)->get(),
+            'auth' => $user,
+            'cartItems' => $cartItems
+        ];
+
+        return Inertia::render('Basket/Index', $data);
     }    
 
 
