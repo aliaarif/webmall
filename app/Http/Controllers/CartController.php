@@ -21,35 +21,55 @@ class CartController extends Controller
         if($product){
 
             // add the product to cart
-            \Cart::session(Auth::id())->add(array(
+            \Cart::session(Auth::id() ?? session()->getId())->add(array(
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
                 'quantity' => 1,
-                'attributes' => array(),
+                'attributes' => [
+                    'cover_img' => $product->cover_img
+                ],
                 'associatedModel' => $product
             ));
-            $cartItems = \Cart::session(Auth::id() ?? '_token')->getTotalQuantity() ?? 0;
-
-            // return response()->json(['status' => true, 'cartItems' => $cartItems]);
-
-            // // $cartItemsTotalAr = [];
-            // // $total = 0;
-            // // foreach($cartItems as $cartItem){
-            // //     array_push($cartItemsTotalAr, $cartItem->quantity);
-            // // }
-
-            // // foreach($cartItemsTotalAr as $qty){
-            // //     $total += $qty; 
-            // // }
-
-
-            // //dd(array_sum($cartItemsTotalAr));
-            // //dd($cartItemsTotalAr);
-
+            $cartItems = \Cart::session(Auth::id() ?? session()->getId())->getTotalQuantity() ?? 0;
             return back()->with(['cartItems' => $cartItems]);
 
         }
+    }
+
+
+
+
+    public function update(Request $request)
+    {
+        //dd($request->all());
+        $product = Product::find($request->pid);
+        if($product){
+            if($request->qty == 0){
+            // remove the product from cart
+            \Cart::session(Auth::id() ?? session()->getId())->remove($request->pid);
+            //dd(\Cart::session(Auth::id() ?? session()->getId())->getContent());
+            return redirect()->route('basket.index');
+            }else{
+                //dd($request->qty);
+                // update the item on cart
+                \Cart::session(Auth::id() ?? session()->getId())
+                    ->update($request->pid,
+                        [
+                            'quantity' => $request->qty
+                        ]
+                    );
+                //dd(\Cart::session(Auth::id() ?? session()->getId())->getContent());
+                return redirect()->route('basket.index');
+            }
+        }
+    }
+
+    public function remove(Request $request)
+    {
+        // remove the product from cart
+        \Cart::session(Auth::id() ?? session()->getId())->remove($request->productId);
+        return redirect()->route('basket.index');
     }
 
 
@@ -63,7 +83,7 @@ class CartController extends Controller
         ];
 
         // view the cart items
-        $items = \Cart::session(Auth::id())->getContent();
+        $items = \Cart::session(Auth::id() ?? session()->getId())->getContent();
 
         $cartItems = [];
         foreach($items as $row) {array_push($cartItems, $row);}
@@ -93,7 +113,7 @@ class CartController extends Controller
         ];
 
         // view the cart items
-        $items = \Cart::session(Auth::id())->getContent();
+        $items = \Cart::session(Auth::id() ?? session()->getId())->getContent();
 
         $cartItems = [];
         foreach($items as $row) {array_push($cartItems, $row);}

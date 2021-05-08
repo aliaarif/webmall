@@ -44,7 +44,7 @@
             <v-img
               :aspect-ratio="16 / 9"
               :src="product.cover_img"
-            />
+            >
               <v-expand-transition>
                 <div
                   v-if="hover"

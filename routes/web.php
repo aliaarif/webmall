@@ -20,9 +20,11 @@ use Symfony\Component\HttpFoundation\Session\Session as HttpFoundationSessionSes
 use Laravel\Socialite\Facades\Socialite;
 use Inertia\Inertia;
 
-Route::get('/basket', [CartController::class, 'basket'])->name('basket.index')->middleware('auth');
-Route::get('/cart', [CartController::class, 'cart'])->name('cart.index')->middleware('auth');
-Route::post('/add-to-cart', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
+Route::get('/basket', [CartController::class, 'basket'])->name('basket.index')->middleware('web');
+Route::get('/cart', [CartController::class, 'cart'])->name('cart.index')->middleware('web');
+Route::post('/add-to-cart', [CartController::class, 'add'])->name('cart.add')->middleware('web');
+Route::post('/update-cart', [CartController::class, 'update'])->name('cart.update')->middleware('web');
+Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove')->middleware('web');
 
 Route::get('/{slug}' , [WelcomeController::class,'details'])->where('slug', '!=', 'login')->name('details');
 
