@@ -72,7 +72,7 @@
         </v-tab>
         <v-spacer></v-spacer>
      <v-tab class="inertia-link" link v-if="cartItems > 0">
-      <inertia-link href="/basket" class="inertia-link">
+      <inertia-link href="/cart" class="inertia-link">
         <v-badge
           color="primary"
           :content="cartItems"
@@ -132,7 +132,9 @@
         </v-tab>
       </v-tabs>
     </v-app-bar>
+    
     <v-main>
+      <v-progress-linear :indeterminate='true' v-if='loading' :height=2></v-progress-linear>
       <v-container fluid>
         <slot />
       </v-container>
@@ -162,6 +164,7 @@
 export default {
   props: ["meta", "auth", "modules", "cartItems"],
   data: () => ({
+    loading:false, 
     drawer: false,
     btns: [["Removed", "0"]],
     colors: ["primary"],

@@ -142,13 +142,13 @@ export default {
     showMore(item) {
       this.showFor = item;
     },
-    addToCart(productId){
+    addToCart(pid){
       //let event = new Event("hello", {bubbles: true}); // (2)
   
       
 
       //event.preventDefault();
-      var data = { productId: productId};
+      var data = { pid: pid};
        Inertia.post("/add-to-cart", data, {
           onSuccess: (res) => {
             // if(res.data.status){

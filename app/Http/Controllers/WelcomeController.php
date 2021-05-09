@@ -51,14 +51,14 @@ class WelcomeController extends Controller
         * @return void
         */
         // \Cart::clear();
-        // \Cart::session(Auth::id() ?? session()->getId())->clear();
+        // \Cart::session(session()->getId() ?? Auth::id())->clear();
 
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
             'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
-        $cartItems = \Cart::session(Auth::id() ?? session()->getId())->getTotalQuantity() ?? 0;
+        $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
         
 
         $data = [
@@ -80,7 +80,7 @@ class WelcomeController extends Controller
             'description' => 'This is dummy description for the Application from dynamic'
         ];
         $product = Product::where('slug', $slug)->first();
-        $cartItems = \Cart::session(Auth::id() ?? session()->getId())->getTotalQuantity() ?? 0;
+        $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
         
 
         $data = [
@@ -103,7 +103,7 @@ class WelcomeController extends Controller
             'title' => env('APP_NAME', 'Application') . ' | Dashboard',
             'description' => 'This is dummy description for the Application dashboard'
         ];
-        $cartItems = \Cart::session(Auth::id() ?? session()->getId())->getTotalQuantity() ?? 0;
+        $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
 
         $data = [
             'meta' => $meta,

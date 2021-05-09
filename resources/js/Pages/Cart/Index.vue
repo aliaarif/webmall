@@ -1,73 +1,58 @@
 <template>
-  <layout :meta="meta" :auth="auth" :cartItems="cartItems">
-    <v-card flat>
-            <v-card-text>
-              <h4>Your Cart</h4>
-              <p align="hustify">
-                <strong>You are logged in as {{ auth.name }}</strong>
-              </p>
-              <p align="hustify">
-                The library system shows the following charges outstanding on
-                your record. If you currently have any items overdue, the fines
-                accruing on these will not be shown below. Fines on overdue
-                loans cannot be paid until the items have been returned or
-                renewed.
-              </p>
-              <v-data-table
-                v-model="selected"
-                :headers="headers"
-                :items="cartItems"
-                :single-select="singleSelect"
-                item-key="id"
-                show-select
-                class="elevation-3"
-              >
-              </v-data-table>
+  <layout :meta="meta" :auth="auth" :cartItems="cartItems.length">
+    <h2 class="display-6">Basket</h2>
+  <v-list two-line>
+    <template v-for="product in cartItems">
+      <v-list-item :key="product.id">
+        
+        <v-avatar class="mr-4">
+          <span>
+            <v-img :src="product.attributes['cover_img']" width="150"/>
+          </span>
+        </v-avatar>
+        
+        <v-list-item-title v-html="product.name"></v-list-item-title>
+        <v-list-item-title>{{ product.price }}</v-list-item-title>
+        
+        
+        <v-icon aria-hidden="false"  @click="decrement(product.id)" color="primary" class="mr-2">mdi-minus</v-icon>
+        <v-text-field  solo dense  min="1" :id="'productQty-'+product.id"   :value="product.quantity" class="mt-6" ></v-text-field>      
+        <v-icon aria-hidden="false" @click="increment(product.id)" color="primary" class="ml-2">mdi-plus</v-icon>
+      
+        <v-list-item-title>{{ product.price * product.quantity }}</v-list-item-title>
+        
+        <v-btn icon ripple @click="removeFromCart(product.id)">
+          <v-icon color="red lighten-1">delete</v-icon>
+        </v-btn>
+           
+        </v-list-item>
 
-              <p align="hustify" class="mt-4">
-                Billing receipts will be emailed to the address we currently
-                have on file for you.
-              </p>
-            </v-card-text>
-            
-          </v-card>
+         <!-- <v-divider :key="product.id"></v-divider> -->
+
+      <!-- <v-divider v-if="index + 1 < cartItems.length" :key="index"></v-divider> -->
+    </template>
+  </v-list>
+
+  
+    <v-btn v-if="cartItems.length != 0" color="success">
+      <inertia-link href="/checkout" class="inertia-link">Checkout</inertia-link>
+      </v-btn>
+    <v-btn v-else color="ingo" style="float:right">
+      <inertia-link href="/" class="inertia-link">Continue Shopping</inertia-link>
+    </v-btn>
+  
   </layout>
 </template>
 <script>
 import Layout from "../../Shared/Layout";
+import { Inertia } from "@inertiajs/inertia";
 export default {
   props: ["meta", "auth", "cartItems"],
   components: {
     Layout,
   },
   data: () => ({
-    singleSelect: false,
-    selected: [],
-    headers: [
-      { 
-        text: "Image",
-        align: "start",
-        sortable: false,
-        value: "cover_img" 
-      },
-      {
-        text: "Name",
-        value: "name",
-      },
-      { 
-        text: "Quantity",
-        value: "quantity" 
-      },
-      { 
-        text: "Price($)",
-        value: "price" 
-      },
-      // { 
-      //   text: "Total($)",
-      //   value: "total" 
-      // }
-    ],
-   
+
   }),
 
   created() {
@@ -77,15 +62,48 @@ export default {
     
   },
   methods: {
-    sumField(key) {
-          return this.selected.reduce((a, b) => parseInt(a) + parseInt((b[key] || 0)), 0)
-      },
+    removeFromCart(pid){
+      this.$parent.loading = true;
+      var data = { pid: pid};
+       Inertia.post("/remove-from-cart", data, {
+          onSuccess: (res) => {
+            //this.$parent.loading = false;
+          },onError: (errors) => {},
+        });
+    },
+    increment(pid) {
+      var pid = pid;
+      var qty = $('#productQty-'+pid).val();  
+      var data = { pid: pid, qty: qty, action: 'plus'};
+      Inertia.post("/update-cart", data, {
+          onSuccess: (res) => {},
+          onError: (errors) => {},
+        });
+    },
+    decrement(pid) {
+      var pid = pid;   
+      var qty = $('#productQty-'+pid).val();         
+      var data = { pid: pid, qty: qty, action: 'minus'};
+      console.log(data);
+      Inertia.post("/update-cart", data, {
+          onSuccess: (res) => {},
+          onError: (errors) => {},
+      });
+    }
   },
 };
 </script>
 <style>
 .inertia-link {
   text-decoration: none !important;
+}
+.quantity {
+  max-width: 150px;
+  width: 100%;
+}
+
+.quantity input {
+  text-align: center;
 }
 </style>
 

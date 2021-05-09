@@ -13,15 +13,13 @@ use Session;
 
 class CartController extends Controller
 {
-    
+    // add the product to cart
     public function add(Request $request)
     {
-        $product = Product::find($request->productId);
+        $product = Product::find($request->pid);
 
         if($product){
-
-            // add the product to cart
-            \Cart::session(Auth::id() ?? session()->getId())->add(array(
+            \Cart::session(session()->getId() ?? Auth::id())->add(array(
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
@@ -31,45 +29,35 @@ class CartController extends Controller
                 ],
                 'associatedModel' => $product
             ));
-            $cartItems = \Cart::session(Auth::id() ?? session()->getId())->getTotalQuantity() ?? 0;
+            $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
             return back()->with(['cartItems' => $cartItems]);
-
         }
     }
 
 
 
-
+    // update the product to cart
     public function update(Request $request)
     {
-        //dd($request->all());
+        $qty = $request->action == 'plus' ? 1 : -1;
         $product = Product::find($request->pid);
-        if($product){
-            if($request->qty == 0){
-            // remove the product from cart
-            \Cart::session(Auth::id() ?? session()->getId())->remove($request->pid);
-            //dd(\Cart::session(Auth::id() ?? session()->getId())->getContent());
-            return redirect()->route('basket.index');
+        if($product)
+        {
+            if($request->qty == 1 && $qty == -1){
+                \Cart::session(session()->getId() ?? Auth::id())->remove($request->pid);
             }else{
-                //dd($request->qty);
-                // update the item on cart
-                \Cart::session(Auth::id() ?? session()->getId())
-                    ->update($request->pid,
-                        [
-                            'quantity' => $request->qty
-                        ]
-                    );
-                //dd(\Cart::session(Auth::id() ?? session()->getId())->getContent());
-                return redirect()->route('basket.index');
+                \Cart::session(session()->getId() ?? Auth::id())->update($request->pid,['quantity' => $qty]);
             }
+            return redirect()->route('cart.index');
         }
     }
+
 
     public function remove(Request $request)
     {
         // remove the product from cart
-        \Cart::session(Auth::id() ?? session()->getId())->remove($request->productId);
-        return redirect()->route('basket.index');
+        \Cart::session(session()->getId() ?? Auth::id())->remove($request->pid);
+        return redirect()->route('cart.index');
     }
 
 
@@ -81,12 +69,14 @@ class CartController extends Controller
             'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
+        
 
         // view the cart items
-        $items = \Cart::session(Auth::id() ?? session()->getId())->getContent();
+        $items = \Cart::session(session()->getId() ?? Auth::id())->getContent();
 
         $cartItems = [];
         foreach($items as $row) {array_push($cartItems, $row);}
+        sort($cartItems);
 
         //return $cartItems;
 
@@ -100,36 +90,6 @@ class CartController extends Controller
         ];
 
         return Inertia::render('Cart/Index', $data);
-    }    
-
-
-    public function basket()
-    {
-
-        $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
-        $meta = [
-            'title' => env('APP_NAME', 'Application') . ' | Home',
-            'description' => 'This is dummy description for the Application from dynamic'
-        ];
-
-        // view the cart items
-        $items = \Cart::session(Auth::id() ?? session()->getId())->getContent();
-
-        $cartItems = [];
-        foreach($items as $row) {array_push($cartItems, $row);}
-
-        //return $cartItems;
-
-        
-
-        $data = [
-            'meta' => $meta,
-            'products' => Product::take(20)->get(),
-            'auth' => $user,
-            'cartItems' => $cartItems
-        ];
-
-        return Inertia::render('Basket/Index', $data);
     }    
 
 
