@@ -29,11 +29,13 @@ class PaymentController extends Controller
         $cartItems = [];
         foreach($items as $row) {array_push($cartItems, $row);}
         sort($cartItems);
+        $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
         
         $data = [
             'meta' => $meta,
             'auth' => $user,
-            'cartItems' => $cartItems
+            'cartItems' => $cartItems,
+            'cartTotalQuantity' => $cartTotalQuantity
         ];
 
         return Inertia::render('Checkout/Index', $data);

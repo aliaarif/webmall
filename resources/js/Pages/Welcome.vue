@@ -114,7 +114,6 @@
         </v-hover>
       </v-col>
     </v-row>
-    <!-- </v-container> -->
   </layout>
 </template>
 <script>
@@ -130,34 +129,17 @@ export default {
     slides: ["First", "Second", "Third", "Fourth", "Fifth"],
     show: false,
     showFor: "",
-
   }),
-
-  created() {
-    //let a = (array) this.cartItems;
-    console.log(this.cartItems);
-  },
-
+  created() {},
   methods: {
     showMore(item) {
       this.showFor = item;
     },
     addToCart(pid){
-      //let event = new Event("hello", {bubbles: true}); // (2)
-  
-      
-
-      //event.preventDefault();
       var data = { pid: pid};
        Inertia.post("/add-to-cart", data, {
-          onSuccess: (res) => {
-            // if(res.data.status){
-            //   this.cartItems = res.data.cartItems
-            // }
-            //event.preventDefault();
-             console.log(res);
-             
-          },onError: (errors) => {},
+          onSuccess: (res) => {},
+          onError: (errors) => {},
         });
     }
   },

@@ -162,7 +162,7 @@
 </style>
 <script>
 export default {
-  props: ["meta", "auth", "modules", "cartItems"],
+  props: ['meta', 'auth', 'modules', 'cartItems'],
   data: () => ({
     loading:false, 
     drawer: false,

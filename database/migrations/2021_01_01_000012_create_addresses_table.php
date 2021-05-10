@@ -7,17 +7,18 @@ use Illuminate\Database\Migrations\Migration;
 class CreateAddressesTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
-            $table->unsignedInteger('user_id')->nullable();
+            $table->unsignedInteger('user_id');
             $table->enum('type', ['home', 'office', 'shop', 'other'])->default('home');
+            $table->string('person_name');
             $table->string('country');
             $table->string('state');
             $table->string('city');
@@ -29,16 +30,17 @@ class CreateAddressesTable extends Migration
             $table->string('neighbourhood');
             $table->string('pin');
             $table->string('flat_no');
+            $table->boolean('default')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('addresses');

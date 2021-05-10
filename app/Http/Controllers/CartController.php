@@ -73,21 +73,22 @@ class CartController extends Controller
 
         // view the cart items
         $items = \Cart::session(session()->getId() ?? Auth::id())->getContent();
-
-        $cartItems = [];
-        foreach($items as $row) {array_push($cartItems, $row);}
-        sort($cartItems);
-
-        //return $cartItems;
-
         
+
+        $cartItemsArr = [];
+        foreach($items as $row) {array_push($cartItemsArr, $row);}
+        sort($cartItemsArr);
+        $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
 
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
             'auth' => $user,
-            'cartItems' => $cartItems
+            'cartItems' => $cartItemsArr,
+            'cartTotalQuantity' => $cartTotalQuantity
+
         ];
+
 
         return Inertia::render('Cart/Index', $data);
     }    

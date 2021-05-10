@@ -1,10 +1,9 @@
 <template>
-  <layout :meta="meta" :auth="auth" :cartItems="cartItems.length">
+  <layout :meta="meta" :auth="auth" :cartItems="cartTotalQuantity">
     <h2 class="display-6">Basket</h2>
   <v-list two-line>
     <template v-for="product in cartItems">
       <v-list-item :key="product.id">
-        
         <v-avatar class="mr-4">
           <span>
             <v-img :src="product.attributes['cover_img']" width="150"/>
@@ -13,7 +12,6 @@
         
         <v-list-item-title v-html="product.name"></v-list-item-title>
         <v-list-item-title>{{ product.price }}</v-list-item-title>
-        
         
         <v-icon aria-hidden="false"  @click="decrement(product.id)" color="primary" class="mr-2">mdi-minus</v-icon>
         <v-text-field  solo dense  min="1" :id="'productQty-'+product.id"   :value="product.quantity" class="mt-6" ></v-text-field>      
@@ -35,7 +33,7 @@
 
   
     <v-btn v-if="cartItems.length != 0" color="success">
-      <inertia-link href="/checkout" class="inertia-link">Checkout</inertia-link>
+      <inertia-link href="/checkout" class="inertia-link">Proceed to checkout</inertia-link>
       </v-btn>
     <v-btn v-else color="ingo" style="float:right">
       <inertia-link href="/" class="inertia-link">Continue Shopping</inertia-link>
@@ -47,7 +45,7 @@
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "cartItems"],
+  props: ['meta', 'auth', 'cartItems', 'cartTotalQuantity'],
   components: {
     Layout,
   },

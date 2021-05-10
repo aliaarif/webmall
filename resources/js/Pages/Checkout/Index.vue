@@ -1,19 +1,22 @@
 <template>
-  <layout :meta="meta" :auth="auth" :cartItems="cartItems.length">
+  <layout :meta="meta" :auth="auth" :cartItems="cartTotalQuantity">
 
 
  
-    <v-row no-gutters>
+    <v-row>
       <v-col
        cols="12"
-        sm="4"
+        sm="5"
       >
         <v-card
           class="pa-2"
+          elevation="2"
           outlined
-          tile
+          shaped
         >
-           <h2 class="display-12">Cart Items</h2>
+          
+      <p class="overline text-h6">Your Cart Items</p>
+    
           <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -61,99 +64,303 @@
         sm="4"
       >
         <v-card
-          class="pa-2"
+ class="pa-2"
+          elevation="2"
           outlined
-          tile
-        >
-           <h2 class="display-12">Cart Items</h2>
-
-        </v-card>
+          shaped
+  
+>
+ <p class="overline text-h6">Select a shipping address <v-icon aria-hidden="false" @click="openAddressModal()" color="primary" class="ml-2">mdi-plus</v-icon></p>
+  <v-list two-line>
+      <v-list-item-group
+        v-model="selectedAddress"
+        active-class="primary--text"
+        
+      >
+        <template v-for="(address, index) in addresses">
+          <v-list-item :key="address.id">
+            <template v-slot:default="{ active }">
+              <v-list-item-content>
+                <v-list-item-title v-text="address.person_name"></v-list-item-title>
+                <v-list-item-subtitle v-text="address.subtitle"></v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-list-item-action-text>
+                <v-icon
+                  v-if="active"
+                  color="primary lighten-4"
+                >
+                  checked
+                </v-icon>
+                </v-list-item-action-text>
+                </v-list-item-action>
+            </template>
+          </v-list-item>
+          <v-divider v-if="index < addresses.length - 1" :key="index" ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
+</v-card>
       </v-col>
           <v-col
        cols="12"
-        sm="4"
+        sm="3"
       >
         <v-card
-          class="pa-2"
+ class="pa-2"
+          elevation="2"
           outlined
-          tile
-        >
-           <h2 class="display-12">Cart Items</h2>
-
-        </v-card>
+          shaped
+  
+>
+ <p class="overline text-h6">Select a card <v-icon aria-hidden="false" @click="addCard()" color="primary" class="ml-2">mdi-plus</v-icon></p>
+<v-list two-line>
+      <v-list-item-group
+        v-model="selectedCard"
+        active-class="primary--text"
+        
+      >
+        <template v-for="(card, index) in cards">
+          <v-list-item :key="card.id">
+            <template v-slot:default="{ active }">
+              <v-list-item-content>
+                <v-list-item-title v-text="card.person_name"></v-list-item-title>
+                <v-list-item-subtitle v-text="card.number"></v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-list-item-action-text>
+                <v-icon
+                  v-if="active"
+                  color="primary lighten-4"
+                >
+                  checked
+                </v-icon>
+                </v-list-item-action-text>
+                </v-list-item-action>
+            </template>
+          </v-list-item>
+          <v-divider v-if="index < cards.length - 1" :key="index" ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
+</v-card>
       </v-col>
     </v-row>
+
+     <v-row justify="center">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="600px"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn id="addAddressModal" class="d-none" v-bind="attrs" v-on="on" ></v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Add New Address</span>
+        </v-card-title>
+        <v-card-text>
+         
+            <v-row>
+              <v-col
+                cols="12"
+                sm="4"
+              >
+                <v-select
+                  :items="['Home', 'Office']"
+                  v-model="addressType"
+                  label="Address Type*"
+                  hint="Please select a address type"
+                  required
+                ></v-select>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="8" 
+              >
+                <v-text-field
+                  v-model="personName"
+                  label="Name"
+                  :value="auth.name"
+                  hint="Person name who recieving the package"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-autocomplete
+                  v-model="addressSelect"
+                  :loading="addressModalLoading"
+                  :items="countries"
+                  :search-input.sync="addressSearch"
+                  cache-items
+                  flat
+                  hide-no-data
+                  hide-details
+                  label="Country"  
+                ></v-autocomplete>
   
+              </v-col>
 
-
+              <v-col cols="12" sm="6">
+                <v-autocomplete
+                  v-model="select"
+                  :loading="loading"
+                  :items="items"
+                  :search-input.sync="search"
+                  cache-items
+                  flat
+                  hide-no-data
+                  hide-details
+                  label="State"
+                  
+                ></v-autocomplete>
   
+              </v-col>
 
-
- 
+              <v-col cols="12" sm="5">
+                <v-autocomplete
+                  v-model="select"
+                  :loading="loading"
+                  :items="items"
+                  :search-input.sync="search"
+                  cache-items
+                  flat
+                  hide-no-data
+                  hide-details
+                  label="City"
+                  
+                ></v-autocomplete>
   
+              </v-col>
 
-  
-    <v-btn v-if="cartItems.length != 0" color="success">
-      <inertia-link href="/checkout" class="inertia-link">Checkout</inertia-link>
-      </v-btn>
-    <v-btn v-else color="ingo" style="float:right">
-      <inertia-link href="/" class="inertia-link">Continue Shopping</inertia-link>
+              <v-col cols="12" sm="4">
+                <v-text-field
+                  label="PIN*"
+                  type="text"
+                  required
+                ></v-text-field>
+              </v-col>
+               <v-col cols="12" sm="3">
+                <v-text-field
+                  label="Flat No*"
+                  type="text"
+                  required
+                ></v-text-field>
+              </v-col>
+
+            
+            </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="dialog = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="saveAddress()"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
+
+    <v-btn  color="success">
+      <inertia-link href="/payment" class="inertia-link">Place Your Order</inertia-link>
     </v-btn>
-  
   </layout>
 </template>
 <script>
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "cartItems"],
+  props: ['meta', 'auth', 'cartItems', 'cartTotalQuantity'],
   components: {
     Layout,
   },
   data: () => ({
-    desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-          },
+    loading: addressModalLoading,
+        items: [],
+        addressSearch: null,
+        addressSelect: null,
+        countries: [
+          'Alabama',
+          'Alaska',
+          'American Samoa',
+          'Arizona',
+          'Arkansas',
+          'California',
+          'Colorado',
+          'Connecticut',
+          'Delaware'
         ],
-      
+         states: [
+          'Alabama',
+          'Alaska',
+          'American Samoa',
+          'Arizona',
+          'Arkansas',
+          'California',
+          'Colorado',
+          'Connecticut',
+          'Delaware'
+        ],
+          cities: [
+          'Alabama',
+          'Alaska',
+          'American Samoa',
+          'Arizona',
+          'Arkansas',
+          'California',
+          'Colorado',
+          'Connecticut',
+          'Delaware'
+        ],
+    
+    dialog: false,
+    selectedAddress: true,
+    selectedCard: true,
+    addresses: [
+        {
+          person_name: 'Ali Connors',
+          headline: 'Brunch this weekend?',
+          subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+          
+        },
+        {
+          person_name: 'me, Scrott, Jennifer',
+          headline: 'Summer BBQ',
+          subtitle: `Wish I could come, but I'm out of town this weekend.`,
+        
+        },
+        {
+          person_name: 'Sandra Adams',
+          headline: 'Oui oui',
+          subtitle: 'Do you have Paris recommendations? Have you ever been?',
+         
+        },
+      ],
+      cards: [
+        {
+          person_name: 'Ali Connors',
+          headline: 'Brunch this weekend?',
+        },
+        {
+          person_name: 'me, Scrott, Jennifer',
+          headline: 'Summer BBQ',
+        },
+        {
+          person_name: 'Sandra Adams',
+          headline: 'Oui oui',
+        },
+      ],    
   }),
 
   created() {
@@ -162,6 +369,11 @@ export default {
   mounted() {
     
   },
+  watch: {
+      search (val) {
+        val && val !== this.select && this.querySelections(val)
+      },
+    },
   methods: {
     removeFromCart(productId){
       var data = { productId: productId};
@@ -187,7 +399,44 @@ export default {
           onSuccess: (res) => {},
           onError: (errors) => {},
       });
-    }
+    },
+    openAddressModal(){
+      $('#addAddressModal').trigger('click');
+    },
+    saveAddress(){
+      let validate =
+        this.username !== "" && this.password !== "" ? true : false;
+      if (validate) {
+        var data = {
+          username: this.username,
+          password: this.password,
+        };
+        Inertia.post("/login", data, {
+          onSuccess: () => {
+            // Handle success event
+            this.responseStatus === false
+              ? (this.error = true)
+              : this.responseStatus;
+          },
+          onError: (errors) => {
+            // Handle validation errors
+            //console.log(errors);
+          },
+        });
+      } else {
+        this.error = true;
+      }
+    },
+     querySelections (v) {
+        this.loading = true
+        // Simulated ajax query
+        setTimeout(() => {
+          this.items = this.states.filter(e => {
+            return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+          })
+          this.loading = false
+        }, 500)
+      },
   },
 };
 </script>

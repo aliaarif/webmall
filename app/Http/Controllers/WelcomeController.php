@@ -58,14 +58,14 @@ class WelcomeController extends Controller
             'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
-        $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
+        $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
         
 
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
             'auth' => $user,
-            'cartItems' => $cartItems
+            'cartItems' => $cartTotalQuantity
         ];
 
         return Inertia::render('Welcome', $data);

@@ -47,7 +47,7 @@
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "cartItems"],
+  props: ['meta', 'auth', 'cartItems'],
   components: {
     Layout,
   },
