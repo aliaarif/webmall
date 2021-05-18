@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AddressController;
 
 
 use Symfony\Component\HttpFoundation\Session\Session as HttpFoundationSessionSession;
@@ -23,12 +24,19 @@ use Laravel\Socialite\Facades\Socialite;
 use Inertia\Inertia;
 
 
+Route::get('dependent-dropdown', [DropdownController::class, 'index']);
+Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
+Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity']);
+
+
 Route::get('/cart', [CartController::class, 'cart'])->name('cart.index')->middleware('web');
 Route::post('/add-to-cart', [CartController::class, 'add'])->name('cart.add')->middleware('web');
 Route::post('/update-cart', [CartController::class, 'update'])->name('cart.update')->middleware('web');
 Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove')->middleware('web');
 
 Route::get('/{slug}' , [WelcomeController::class,'details'])->where('slug', '!=', 'login')->name('details');
+
+Route::get('/address' , [AddressController::class,'address'])->name('address');
 
 Route::get('/' , [WelcomeController::class,'welcome'])->name('welcome');
 Route::get('dashboard' , [WelcomeController::class,'dashboard'])->name('dashboard')->middleware('auth');
@@ -46,8 +54,8 @@ Route::prefix('sign-in')->group(function(){
 
 Route::middleware('auth')->group(function(){
     Route::get('/checkout', [PaymentController::class, 'checkout']);
-
+    
     Route::post('/checkout', [PaymentController::class, 'processCheckout']);
-
+    
     Route::get('/my-orders', [OrderController       ::class, 'myOrders'])->name('myorders');
 });

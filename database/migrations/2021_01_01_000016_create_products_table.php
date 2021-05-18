@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class CreateProductsTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
@@ -22,14 +22,15 @@ class CreateProductsTable extends Migration
             $table->float('price');
             $table->string('cover_img')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('products');

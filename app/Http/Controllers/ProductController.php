@@ -24,11 +24,11 @@ use Laravel\Socialite\Facades\Socialite;
 
 class ProductController extends Controller
 {
-   
-
+    
+    
     public function products(){
         $products = Product::with('categories:id,name')->get();
-
+        
         return $products;
     }
 }

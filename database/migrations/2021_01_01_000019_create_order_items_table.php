@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class CreateOrderItemsTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('order_items', function (Blueprint $table) {
@@ -22,14 +22,15 @@ class CreateOrderItemsTable extends Migration
             $table->decimal('item_price')->nullable()->comment('To store the item price');
             $table->integer('item_qty')->nullable()->comment('To store item quantity');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('order_items');

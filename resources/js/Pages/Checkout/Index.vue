@@ -157,6 +157,11 @@
         <v-btn id="addAddressModal" class="d-none" v-bind="attrs" v-on="on" ></v-btn>
       </template>
       <v-card>
+        <v-form
+    ref="form"
+    v-model="valid"
+    lazy-validation
+  >
         <v-card-title>
           <span class="headline">Add New Address</span>
         </v-card-title>
@@ -168,10 +173,11 @@
                 sm="4"
               >
                 <v-select
-                  :items="['Home', 'Office']"
-                  v-model="addressType"
                   label="Address Type*"
                   hint="Please select a address type"
+                  v-model="addressType"
+                  :items="['Home', 'Office']"
+                  :rules="[v => !!v || 'Required!']"
                   required
                 ></v-select>
               </v-col>
@@ -180,53 +186,57 @@
                 sm="8" 
               >
                 <v-text-field
-                  v-model="personName"
-                  label="Name"
-                  :value="auth.name"
+                  label="Name*"
                   hint="Person name who recieving the package"
+                  v-model="personName"
+                  :rules="personNameRules"
+                  :counter="20"
+                  :value="auth.name"
+                  required                                   
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
                 <v-autocomplete
-                  v-model="addressSelect"
-                  :loading="addressModalLoading"
+                  label="Country"
+                  hint="Please select a country"
+                  v-model="countrySelect"
+                  :loading="countryModalLoading"
                   :items="countries"
-                  :search-input.sync="addressSearch"
+                  :rules="[v => !!v || 'Country name is required']"
+                  :search-input.sync="countrySearch"
+                  required
                   cache-items
                   flat
-                  hide-no-data
-                  hide-details
-                  label="Country"  
+                  hide-no-data        
                 ></v-autocomplete>
-  
               </v-col>
 
-              <v-col cols="12" sm="6">
+               <v-col cols="12" sm="6">
                 <v-autocomplete
-                  v-model="select"
-                  :loading="loading"
-                  :items="items"
-                  :search-input.sync="search"
+                  label="State"
+                  hint="Please select a state"
+                  v-model="stateSelect"
+                  :loading="stateModalLoading"
+                  :items="states"
+                  :rules="[v => !!v || 'State name is required']"
+                  :search-input.sync="stateSearch"
+                  required
                   cache-items
                   flat
-                  hide-no-data
-                  hide-details
-                  label="State"
-                  
+                  hide-no-data        
                 ></v-autocomplete>
-  
               </v-col>
 
               <v-col cols="12" sm="5">
                 <v-autocomplete
-                  v-model="select"
-                  :loading="loading"
-                  :items="items"
-                  :search-input.sync="search"
+                  v-model="citySelect"
+                  :loading="cityModalLoading"
+                  :items="cities"
+                  :search-input.sync="citySearch"
                   cache-items
                   flat
                   hide-no-data
-                  hide-details
+                 
                   label="City"
                   
                 ></v-autocomplete>
@@ -235,6 +245,7 @@
 
               <v-col cols="12" sm="4">
                 <v-text-field
+                  v-model="pin"
                   label="PIN*"
                   type="text"
                   required
@@ -242,6 +253,7 @@
               </v-col>
                <v-col cols="12" sm="3">
                 <v-text-field
+                  v-model="flatNo"
                   label="Flat No*"
                   type="text"
                   required
@@ -261,6 +273,7 @@
             Close
           </v-btn>
           <v-btn
+            :disabled="!valid"
             color="blue darken-1"
             text
             @click="saveAddress()"
@@ -268,6 +281,7 @@
             Save
           </v-btn>
         </v-card-actions>
+        </v-form>
       </v-card>
     </v-dialog>
   </v-row>
@@ -286,11 +300,28 @@ export default {
     Layout,
   },
   data: () => ({
-    loading: addressModalLoading,
-        items: [],
-        addressSearch: null,
-        addressSelect: null,
-        countries: [
+      valid: true,
+      addressType: null,
+      personName: '',
+      personNameRules: [
+        v => !!v || 'Person name is required',
+        v => (v && v.length <= 20) || 'Person Name must be less than 20 characters',
+      ],
+      countrySelect: null,
+      stateSelect: null,
+      citySelect: null,
+      pin: null,
+      flatNo: null,
+    
+      countryModalLoading: false,
+      stateModalLoading: false,
+      cityModalLoading: false,
+
+      countrySearch: null,
+      stateSearch: null,
+      citySearch: null,
+        
+      countries: [
           'Alabama',
           'Alaska',
           'American Samoa',
@@ -375,6 +406,9 @@ export default {
       },
     },
   methods: {
+
+
+
     removeFromCart(productId){
       var data = { productId: productId};
        Inertia.post("/remove-from-cart", data, {
@@ -404,12 +438,27 @@ export default {
       $('#addAddressModal').trigger('click');
     },
     saveAddress(){
+
+      this.$refs.form.validate();
+
       let validate =
-        this.username !== "" && this.password !== "" ? true : false;
+        this.addressType !== "" &&
+        this.personName !== "" &&
+        this.countrySelect !== "" &&
+        this.stateSelect !== "" &&
+        this.citySelect !== "" &&
+        this.pin !== "" &&
+        this.flatNo  ? true : false;
       if (validate) {
         var data = {
-          username: this.username,
-          password: this.password,
+          addressType: this.addressType,
+          personName: this.personName,
+          countrySelect: this.countrySelect,
+          stateSelect: this.stateSelect,
+          citySelect: this.citySelect,
+          pin: this.pin,
+          flatNo: this.flatNo,
+
         };
         Inertia.post("/login", data, {
           onSuccess: () => {

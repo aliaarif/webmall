@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class CreateOrdersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
@@ -26,14 +26,15 @@ class CreateOrdersTable extends Migration
             $table->enum('payment_mode', ['Free', 'Internal Trading', 'Online', 'PDQ', 'Purchase Order'])->nullable()->default('Online')->comment('to store the payment mode');
             $table->string('ip_address', 50)->nullable()->comment('To store the IP address of client machine');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('orders');
