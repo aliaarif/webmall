@@ -36,18 +36,20 @@ class AddressController extends Controller
             'description' => 'This is dummy description for the Application from dynamic'
         ];
         
-        $countries = Country::with('states:id,state_name')->get();
-        $states = State::with(['countries:id,country_name', 'cities:id,city_name'])->get();
-        $cities = City::with(['countries:id,country_name', 'states:id,state_name'])->get();
         
         
+        $countries = Country::with('states:id,name')->get();
+        // $states = State::with(['countries:id,name', 'cities:id,name'])->get();
+        // $cities = City::with(['countries:id,name', 'states:id,name'])->get();
+        
+        //dd($countries);
         
         $data = [
             'meta' => $meta,
             'auth' => $user,
             'countries' => $countries,
-            'states' => $states,
-            'cities' => $cities,
+            // 'states' => $states,
+            // 'cities' => $cities,
             
         ];
         

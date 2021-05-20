@@ -15,8 +15,8 @@ class CreateCitiesTable extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable()->comment('To store the city name ');
             $table->unsignedInteger('state_id');
+            $table->string('name')->nullable()->comment('To store the city name ');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -20,10 +20,10 @@
         active-class="primary--text"
         
       >
-        <template v-for="(address, index) in addresses">
-          <v-list-item :key="address.id">
-            <template v-slot:default="{ active }" class="">
-                <v-list-item-title v-text="address.person_name"></v-list-item-title>              
+        <template v-for="(country, index) in countries" >
+          <v-list-item :key="country.id" v-slot:default="{ active }" @click="getStates(country.id)">
+        
+                <v-list-item-title v-text="country.name"></v-list-item-title>              
               <v-list-item-action>
                 <v-list-item-action-text>
                 <v-icon
@@ -34,9 +34,11 @@
                 </v-icon>
                 </v-list-item-action-text>
                 </v-list-item-action>
-            </template>
+
+                <v-divider v-if="index < countries.length - 1" :key="index" ></v-divider>
+           
           </v-list-item>
-          <v-divider v-if="index < addresses.length - 1" :key="index" ></v-divider>
+          
         </template>
       </v-list-item-group>
     </v-list>
@@ -53,8 +55,35 @@
           outlined
           tile
         >
-           <p class="overline text-h6">Countries <v-icon aria-hidden="false" @click="openAddressModal()" color="primary" class="ml-2">mdi-plus</v-icon></p>
+           <p class="overline text-h6">States <v-icon aria-hidden="false" @click="openAddressModal()" color="primary" class="ml-2">mdi-plus</v-icon></p>
+     <v-list two-line>
+      <v-list-item-group
+        v-model="selectedAddress"
+        active-class="primary--text"
+        
+      >
+        <template v-for="(state, index) in states" >
+          <v-list-item :key="state.id" v-slot:default="{ active }" @click="getCities(state.id)">
+        
+                <v-list-item-title v-text="state.name"></v-list-item-title>              
+              <v-list-item-action>
+                <v-list-item-action-text>
+                <v-icon
+                  v-if="active"
+                  color="primary lighten-4"
+                >
+                  checked
+                </v-icon>
+                </v-list-item-action-text>
+                </v-list-item-action>
 
+                <v-divider v-if="index < states.length - 1" :key="index" ></v-divider>
+           
+          </v-list-item>
+          
+        </template>
+      </v-list-item-group>
+    </v-list>
         </v-card>
       </v-col>
 
@@ -67,7 +96,7 @@
           outlined
           tile
         >
-           <p class="overline text-h6">Countries <v-icon aria-hidden="false" @click="openAddressModal()" color="primary" class="ml-2">mdi-plus</v-icon></p>
+           <p class="overline text-h6">Cities <v-icon aria-hidden="false" @click="openAddressModal()" color="primary" class="ml-2">mdi-plus</v-icon></p>
 
         </v-card>
       </v-col>
@@ -75,149 +104,7 @@
 
 
  
-    <v-row>
-      <v-col
-       cols="12"
-        sm="5"
-      >
-        <v-card
-          class="pa-2"
-          elevation="2"
-          outlined
-          shaped
-        >
-          
-      <p class="overline text-h6">Your Cart Items</p>
-    
-          <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th class="text-left">
-            Name
-          </th>
-          <th class="text-left">
-            Price
-          </th>
-          <th class="text-left">
-            Quantity
-          </th>
-          <th class="text-left">
-            Total
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="product in cartItems"
-          :key="product.id"
-        >
-        <td>
-           <v-avatar class="mr-1">
-          <span>
-            <v-img :src="product.attributes['cover_img']" width="150"/>
-          </span>
-        </v-avatar> {{ product.name }}
-        </td>
-          <td>{{ product.price }}</td>
-          <td>{{ product.quantity }}</td>
-          <td>{{ product.price * product.quantity }}</td>
-        </tr>
-      </tbody>
-    </template>
-  </v-simple-table>
-        </v-card>
-      </v-col>
-
-
-
-      <v-col
-       cols="12"
-        sm="4"
-      >
-        <v-card
- class="pa-2"
-          elevation="2"
-          outlined
-          shaped
   
->
- <p class="overline text-h6">Select a shipping address <v-icon aria-hidden="false" @click="openAddressModal()" color="primary" class="ml-2">mdi-plus</v-icon></p>
-  <v-list two-line>
-      <v-list-item-group
-        v-model="selectedAddress"
-        active-class="primary--text"
-        
-      >
-        <template v-for="(address, index) in addresses">
-          <v-list-item :key="address.id">
-            <template v-slot:default="{ active }">
-              <v-list-item-content>
-                <v-list-item-title v-text="address.person_name"></v-list-item-title>
-                <v-list-item-subtitle v-text="address.subtitle"></v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-list-item-action-text>
-                <v-icon
-                  v-if="active"
-                  color="primary lighten-4"
-                >
-                  checked
-                </v-icon>
-                </v-list-item-action-text>
-                </v-list-item-action>
-            </template>
-          </v-list-item>
-          <v-divider v-if="index < addresses.length - 1" :key="index" ></v-divider>
-        </template>
-      </v-list-item-group>
-    </v-list>
-</v-card>
-      </v-col>
-          <v-col
-       cols="12"
-        sm="3"
-      >
-        <v-card
- class="pa-2"
-          elevation="2"
-          outlined
-          shaped
-  
->
- <p class="overline text-h6">Select a card <v-icon aria-hidden="false" @click="addCard()" color="primary" class="ml-2">mdi-plus</v-icon></p>
-<v-list two-line>
-      <v-list-item-group
-        v-model="selectedCard"
-        active-class="primary--text"
-        
-      >
-        <template v-for="(card, index) in cards">
-          <v-list-item :key="card.id">
-            <template v-slot:default="{ active }">
-              <v-list-item-content>
-                <v-list-item-title v-text="card.person_name"></v-list-item-title>
-                <v-list-item-subtitle v-text="card.number"></v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-list-item-action-text>
-                <v-icon
-                  v-if="active"
-                  color="primary lighten-4"
-                >
-                  checked
-                </v-icon>
-                </v-list-item-action-text>
-                </v-list-item-action>
-            </template>
-          </v-list-item>
-          <v-divider v-if="index < cards.length - 1" :key="index" ></v-divider>
-        </template>
-      </v-list-item-group>
-    </v-list>
-</v-card>
-      </v-col>
-    </v-row>
 
      <v-row justify="center">
     <v-dialog
@@ -358,16 +245,16 @@
     </v-dialog>
   </v-row>
 
-    <v-btn  color="success">
+    <!-- <v-btn  color="success">
       <inertia-link href="/payment" class="inertia-link">Place Your Order</inertia-link>
-    </v-btn>
+    </v-btn> -->
   </layout>
 </template>
 <script>
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ['meta', 'auth', 'cartItems', 'cartTotalQuantity'],
+  props: ['meta', 'auth', 'cartItems', 'cartTotalQuantity', 'countries'],
   components: {
     Layout,
   },
@@ -379,6 +266,10 @@ export default {
         v => !!v || 'Person name is required',
         v => (v && v.length <= 20) || 'Person Name must be less than 20 characters',
       ],
+
+      states:[],
+      cities:[],
+
       countrySelect: null,
       stateSelect: null,
       citySelect: null,
@@ -393,39 +284,7 @@ export default {
       stateSearch: null,
       citySearch: null,
         
-      countries: [
-          'Alabama',
-          'Alaska',
-          'American Samoa',
-          'Arizona',
-          'Arkansas',
-          'California',
-          'Colorado',
-          'Connecticut',
-          'Delaware'
-        ],
-         states: [
-          'Alabama',
-          'Alaska',
-          'American Samoa',
-          'Arizona',
-          'Arkansas',
-          'California',
-          'Colorado',
-          'Connecticut',
-          'Delaware'
-        ],
-          cities: [
-          'Alabama',
-          'Alaska',
-          'American Samoa',
-          'Arizona',
-          'Arkansas',
-          'California',
-          'Colorado',
-          'Connecticut',
-          'Delaware'
-        ],
+    
     
     dialog: false,
     selectedAddress: true,
@@ -478,6 +337,32 @@ export default {
       },
     },
   methods: {
+
+    getStates(countryId){
+        //alert(1);
+      var data = { countryId: countryId};
+      //  axios.post("/api/fetch-states", data) 
+      //     .then(res) => {
+      //       //alert(2);
+      //       console.log(res);
+      //       this.states = res.states;
+      //     }.catch(errors){},
+      //   );
+
+
+        axios.post('/api/fetch-states', data)
+  .then(function (response) {
+    console.log(response.data.states);
+      response.data.states.forEach(function(state, index){
+         this.states.push(index); 
+      });
+    //this.states = response.data.states;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+    },
 
 
 
@@ -572,6 +457,9 @@ export default {
 
 .quantity input {
   text-align: center;
+}
+.v-list--two-line .v-list-item, .v-list-item--two-line {
+  min-height: 50px;
 }
 </style>
 

@@ -19,8 +19,8 @@ class DropdownController extends Controller
     
     public function fetchState(Request $request)
     {
-        $data['states'] = State::where("country_id",$request->country_id)->get(["name", "id"]);
-        return response()->json($data);
+        $states = State::where("country_id",$request->countryId)->get(["name", "id"]);
+        return response()->json(['status' => true, 'states' => $states], 200);
     }
     
     public function fetchCity(Request $request)

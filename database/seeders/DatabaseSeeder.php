@@ -9,10 +9,10 @@ use App\Models\Product;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
+    * Seed the application's database.
+    *
+    * @return void
+    */
     public function run()
     {
         $this->call([
@@ -22,20 +22,22 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             CategoriesSeeder::class,
             ProductsSeeder::class,
+            CountriesSeeder::class,
             
-        ]);
-
-        
-        // Product::factory()->count(20)->create();
-        // Category::factory()->count(5)->create();
-
-        // $categories = Category::all();
-
-        // Product::all()->each(function($product) use ($categories) {
-        //     $product->categories()->attach(
-        //         $categories->random(2)->pluck('id')->toArray()
-        //     );
-        // });
-        
-    }
-}
+            ]);
+            
+            
+            // Product::factory()->count(20)->create();
+            // Category::factory()->count(5)->create();
+            
+            // $categories = Category::all();
+            
+            // Product::all()->each(function($product) use ($categories) {
+                //     $product->categories()->attach(
+                    //         $categories->random(2)->pluck('id')->toArray()
+                    //     );
+                    // });
+                    
+                }
+            }
+            
