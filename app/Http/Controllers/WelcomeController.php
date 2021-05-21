@@ -22,29 +22,13 @@ use Auth;
 
 class WelcomeController extends Controller
 {
-
+    
     use CommonTraits;
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        // $moduleRoute = [];
-        //  foreach(Product::all() as $module){
-        //     $data = [
-        //         'products' => Product::all(),
-        //         'page_title' => env('APP_NAME', 'Application').' | Home'
-        //         ];
-
-        //     return Inertia::render($module['getMethod'], $data);
-        // }
-    }
-
+    
+    
     public function welcome()
     {
-
+        
         /**
         * clear cart
         *
@@ -52,7 +36,7 @@ class WelcomeController extends Controller
         */
         // \Cart::clear();
         // \Cart::session(session()->getId() ?? Auth::id())->clear();
-
+        
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
             'title' => env('APP_NAME', 'Application') . ' | Home',
@@ -60,20 +44,20 @@ class WelcomeController extends Controller
         ];
         $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
         
-
+        
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
             'auth' => $user,
             'cartItems' => $cartTotalQuantity
         ];
-
+        
         return Inertia::render('Welcome', $data);
     }
-
+    
     public function details($slug)
     {
-
+        
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
             'title' => env('APP_NAME', 'Application') . ' | Home',
@@ -82,7 +66,7 @@ class WelcomeController extends Controller
         $product = Product::where('slug', $slug)->first();
         $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
         
-
+        
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
@@ -91,28 +75,28 @@ class WelcomeController extends Controller
             'cartItems' => $cartItems
             
         ];
-
+        
         return Inertia::render('Details', $data);
     }
-
+    
     public function dashboard()
     {
-
+        
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
             'title' => env('APP_NAME', 'Application') . ' | Dashboard',
             'description' => 'This is dummy description for the Application dashboard'
         ];
         $cartItems = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
-
+        
         $data = [
             'meta' => $meta,
             'auth' => $user,
             'products' => Product::all(),
             'cartItems' => $cartItems
         ];
-
+        
         return Inertia::render('Dashboard', $data);
     }
-
+    
 }

@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Rozorpay\Api\Api;
+use Exception;
+use Session;
 use Inertia\Inertia;
 use App\Models\Role;
 use App\Models\User;
-use Session;
 use Auth;
 
 class PaymentController extends Controller
 {
-   
+
 
 
     public function checkout()
@@ -30,42 +32,64 @@ class PaymentController extends Controller
         foreach($items as $row) {array_push($cartItems, $row);}
         sort($cartItems);
         $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
-        
+
         $data = [
             'meta' => $meta,
             'auth' => $user,
             'cartItems' => $cartItems,
             'cartTotalQuantity' => $cartTotalQuantity
         ];
-
         return Inertia::render('Checkout/Index', $data);
-    }  
-    
-    
-    
-    public function processCheckout()
+    }
+
+
+
+    public function makePayment(Request $request)
     {
-        $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;   
-        $items = \Cart::session(session()->getId() ?? Auth::id())->getContent();
-        $cartItems = [];
-        foreach($items as $row) {array_push($cartItems, $row);}
-        sort($cartItems);
-        $data = [
-            'auth' => $user,
-            'cartItems' => $cartItems
-        ];
+      $input = $request->all();
+
+      $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+
+      $payment = $api->payment->fetch($input['razorpay_payment_id']);
+
+      if(count($input)  && !empty($input['razorpay_payment_id'])) {
+          try {
+              $response = $api->payment->fetch($input['razorpay_payment_id'])->capture(array('amount'=>$payment['amount']));
+
+          } catch (Exception $e) {
+              return  $e->getMessage();
+              Session::put('error',$e->getMessage());
+              return redirect()->back();
+          }
+      }
+
+      Session::put('success', 'Payment successful');
+      return redirect()->back();
+
+
+        // $user =  User::where('id', Auth::id())->with(['roles', 'address', 'card'])->first();
+        // $items = \Cart::session(session()->getId() ?? Auth::id())->getContent();
+        // $cartItems = [];
+        // foreach($items as $row) {array_push($cartItems, $row);}
+        // sort($cartItems);
+        // $data = [
+        //     'auth' => $user,
+        //     'cartItems' => $cartItems
+        // ];
+
+
 
         //After Successfull Payment
 
         //Store Order data into orders table
-        
+
         //Store Order data into order_items table
 
-        return redirect()->route('myorders');
-    }  
+        //return redirect()->route('myorders');
+    }
 
 
-    
+
 
 
 }

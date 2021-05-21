@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use HasFactory;
-
+    
     protected $guarded = [];
     
     const ROLE_VISITOR = 1;
@@ -21,10 +21,10 @@ class Role extends Model
     const ROLE_BIDDER = 8;
     const AFFILIATE = 9;
     const SUPPLIER = 10;
-
+    
     public function users() {
-
+        
         return $this->belongsToMany(User::class,'role_user', 'role_id', 'user_id');
-
+        
     }
 }

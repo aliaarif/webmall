@@ -14,81 +14,95 @@ use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes, Billable;
-
-    protected $guarded = [];
-
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
-
-
-    public function orders(){
-      return $this->hasMany(Order::class);
+  use HasFactory, Notifiable, SoftDeletes, Billable;
+  
+  protected $guarded = [];
+  
+  protected $hidden = [
+    'password', 'remember_token',
+  ];
+  
+  protected $dates = [
+    'created_at',
+    'updated_at',
+    'deleted_at',
+  ];
+  
+  
+  public function orders(){
+    return $this->hasMany(Order::class);
   }
-
-    public function details()
-    {
-        return $this->hasOne(UserDetail::class, 'user_id');
+  
+  public function details()
+  {
+    return $this->hasOne(UserDetail::class, 'user_id');
+  }
+  
+  public function charges()
+  {
+    return $this->hasMany(LibraryPayment::class, 'user_id');
+  }
+  
+  
+  
+  public function addresses()
+  {
+    return $this->belongsToMany('App\Models\Address');
+  }
+  
+  
+  public function roles()
+  {
+    return $this
+    ->belongsToMany('App\Models\Role')
+    ->withTimestamps();
+  }
+  
+  
+  public function users()
+  {
+    return $this
+    ->belongsToMany('App\Models\User')
+    ->withTimestamps();
+  }
+  
+  public function authorizeRoles($roles)
+  {
+    if ($this->hasAnyRole($roles)) {
+      return true;
     }
-
-    public function charges()
-    {
-        return $this->hasMany(LibraryPayment::class, 'user_id');
-    }
-
-
-    public function roles()
-    {
-        return $this
-            ->belongsToMany('App\Models\Role')
-            ->withTimestamps();
-    }
-    
-
-    public function users()
-    {
-        return $this
-            ->belongsToMany('App\Models\User')
-            ->withTimestamps();
-    }
-
-    public function authorizeRoles($roles)
-    {
-      if ($this->hasAnyRole($roles)) {
-        return true;
-      }
-      abort(401, 'This action is unauthorized.');
-    }
-
-    public function hasAnyRole($roles)
-    {
-      if (is_array($roles)) {
-        foreach ($roles as $role) {
-          if ($this->hasRole($role)) {
-            return true;
-          }
-        }
-      } else {
-        if ($this->hasRole($roles)) {
+    abort(401, 'This action is unauthorized.');
+  }
+  
+  public function hasAnyRole($roles)
+  {
+    if (is_array($roles)) {
+      foreach ($roles as $role) {
+        if ($this->hasRole($role)) {
           return true;
         }
       }
-      return false;
-    }
-
-    public function hasRole($role)
-    {
-      if ($this->roles()->where(‘name’, $role)->first()) {
+    } else {
+      if ($this->hasRole($roles)) {
         return true;
       }
-      return false;
     }
-
+    return false;
+  }
+  
+  public function hasRole($role)
+  {
+    if ($this->roles()->where(‘name’, $role)->first()) {
+      return true;
+    }
+    return false;
+  }
+  
+  
+  public function hasShippingAddress()
+  {
+    $shippingAddress = $this->adresses()->where(‘default’, 1)->first();
+    return $shippingAddress;
+  }
+  
 }

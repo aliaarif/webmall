@@ -56,8 +56,10 @@ Route::prefix('sign-in')->group(function(){
 
 Route::middleware('auth')->group(function(){
     Route::get('/checkout', [PaymentController::class, 'checkout']);
-    
-    Route::post('/checkout', [PaymentController::class, 'processCheckout']);
-    
-    Route::get('/my-orders', [OrderController       ::class, 'myOrders'])->name('myorders');
+
+    Route::post('/make-payment', [PaymentController::class, 'makePayment'])->name('razorpay.payment.store');;
+
+
+
+    Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('myorders');
 });
