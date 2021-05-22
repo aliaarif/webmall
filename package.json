@@ -36,6 +36,7 @@
         "@stripe/stripe-js": "^1.13.2",
         "@vue-stripe/vue-stripe": "^4.1.8",
         "browser-sync": "^2.26.14",
+        "postscribe": "^2.0.8",
         "vuelidate": "^0.7.6",
         "vuetify": "^2.4.8"
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use Rozorpay\Api\Api;
+use Razorpay\Api\Api;
 use Exception;
 use Session;
 use Inertia\Inertia;
@@ -48,23 +48,39 @@ class PaymentController extends Controller
     {
       $input = $request->all();
 
-      $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
-      $payment = $api->payment->fetch($input['razorpay_payment_id']);
 
-      if(count($input)  && !empty($input['razorpay_payment_id'])) {
-          try {
-              $response = $api->payment->fetch($input['razorpay_payment_id'])->capture(array('amount'=>$payment['amount']));
+      $api = new Api(env('RAZORPAY_KEY', 'rzp_test_HbTgIQNLrQUvHu'), env('RAZORPAY_SECRET', 'b6N61bUE4V2EDr9PwPzkol0r'));
 
-          } catch (Exception $e) {
-              return  $e->getMessage();
-              Session::put('error',$e->getMessage());
-              return redirect()->back();
-          }
-      }
+      //dd($api);
+
+      $order = $api->order->create(array(
+        'receipt' => '123',
+        'amount' => 100,
+        'currency' => 'INR'
+      )
+    );
+
+      dd($order);
+
+      //$payment = $api->payment->fetch($order->id);
+
+      //dd($payment);
+
+      //
+      // if(count($input)  && !empty($input['razorpay_payment_id'])) {
+      //     try {
+      //         $response = $api->payment->fetch($input['razorpay_payment_id'])->capture(array('amount'=>$payment['amount']));
+      //
+      //     } catch (Exception $e) {
+      //         return  $e->getMessage();
+      //         Session::put('error',$e->getMessage());
+      //         return redirect()->back();
+      //     }
+      // }
 
       Session::put('success', 'Payment successful');
-      return redirect()->back();
+      //return redirect()->back();
 
 
         // $user =  User::where('id', Auth::id())->with(['roles', 'address', 'card'])->first();
@@ -85,7 +101,7 @@ class PaymentController extends Controller
 
         //Store Order data into order_items table
 
-        //return redirect()->route('myorders');
+        return redirect()->route('myorders');
     }
 
 

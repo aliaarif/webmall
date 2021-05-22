@@ -253,9 +253,17 @@
     </v-row>
 
     <v-btn color="success" @click="makePayment()"> Place Your Order </v-btn>
+    <div id="gist"></div>
+
+
+
   </layout>
 </template>
+
+
+
 <script>
+//import postscribe from 'postscribe'
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
@@ -359,7 +367,9 @@ export default {
   created() {
     console.log(this.cartItems);
   },
-  mounted() {},
+  mounted() {
+    //alert(1);
+  },
   watch: {
     search(val) {
       val && val !== this.select && this.querySelections(val);
@@ -446,7 +456,7 @@ export default {
     },
 
     makePayment() {
-      alert(1);
+      //alert(1);
       var data = {
         addressType: this.addressType,
         personName: this.personName,
@@ -484,5 +494,3 @@ export default {
   text-align: center;
 }
 </style>
-
-

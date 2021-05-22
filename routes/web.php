@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Session\Session as HttpFoundationSessionSes
 use Laravel\Socialite\Facades\Socialite;
 use Inertia\Inertia;
 
+Route::get('/' , [WelcomeController::class,'welcome'])->name('welcome');
 
 Route::get('dependent-dropdown', [DropdownController::class, 'index']);
 Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
@@ -40,7 +41,7 @@ Route::get('/{slug}' , [WelcomeController::class,'details'])->where('slug', '!='
 
 Route::get('/address' , [AddressController::class,'address'])->name('address');
 
-Route::get('/' , [WelcomeController::class,'welcome'])->name('welcome');
+
 Route::get('dashboard' , [WelcomeController::class,'dashboard'])->name('dashboard')->middleware('auth');
 
 Route::get('/login' , [AuthController::class,'loginForm'])->name('loginForm');
