@@ -254,18 +254,17 @@
 
     <v-btn color="success" @click="makePayment()"> Place Your Order </v-btn>
     <div id="gist"></div>
-
-
-
   </layout>
 </template>
 
-
+<script>
+</script>
 
 <script>
 //import postscribe from 'postscribe'
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
+
 export default {
   props: ["meta", "auth", "cartItems", "cartTotalQuantity"],
   components: {
@@ -364,9 +363,7 @@ export default {
     ],
   }),
 
-  created() {
-    console.log(this.cartItems);
-  },
+  created() {},
   mounted() {
     //alert(1);
   },
@@ -456,6 +453,47 @@ export default {
     },
 
     makePayment() {
+      // var options = {
+      //   key: "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
+      //   amount: "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      //   currency: "INR",
+      //   name: "Acme Corp",
+      //   description: "Test Transaction",
+      //   image: "https://example.com/your_logo",
+      //   order_id: "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      //   handler: function (response) {
+      //     alert(response.razorpay_payment_id);
+      //     alert(response.razorpay_order_id);
+      //     alert(response.razorpay_signature);
+      //   },
+      //   prefill: {
+      //     name: "Gaurav Kumar",
+      //     email: "gaurav.kumar@example.com",
+      //     contact: "9999999999",
+      //   },
+      //   notes: {
+      //     address: "Razorpay Corporate Office",
+      //   },
+      //   theme: {
+      //     color: "#3399cc",
+      //   },
+      // };
+
+      //var rzp1 = new Razorpay(options);
+      // rzp1.on("payment.failed", function (response) {
+      //   alert(response.error.code);
+      //   alert(response.error.description);
+      //   alert(response.error.source);
+      //   alert(response.error.step);
+      //   alert(response.error.reason);
+      //   alert(response.error.metadata.order_id);
+      //   alert(response.error.metadata.payment_id);
+      // });
+
+      // alert(1);
+      // rzp1.open();
+      // e.preventDefault();
+
       //alert(1);
       var data = {
         addressType: this.addressType,

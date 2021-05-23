@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\DB;
 class CategoriesSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+    * Run the database seeds.
+    *
+    * @return void
+    */
     public function run()
     {
+        Category::truncate();
         Category::factory()->count(5)->create();
     }
 }

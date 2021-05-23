@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\DB;
 class ProductsSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+    * Run the database seeds.
+    *
+    * @return void
+    */
     public function run()
     {
+        Product::truncate();
         Product::factory()->count(50)->create();
     }
 }

@@ -15,9 +15,9 @@ class CreateCountriesTable extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable()->comment('To store the country name ');
             $table->string('sortname');
             $table->string('phonecode');
+            $table->string('name')->nullable()->comment('To store the country name ');
             $table->timestamps();
             $table->softDeletes();
         });

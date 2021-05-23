@@ -16,14 +16,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            CountriesSeeder::class,
+            StatesSeeder::class,
             ActivitiesSeeder::class,
             ApisSeeder::class,
             RolesSeeder::class,
             UsersSeeder::class,
             CategoriesSeeder::class,
-            ProductsSeeder::class,
-            CountriesSeeder::class,
-            
+            ProductsSeeder::class,            
             ]);
             
             

@@ -311,7 +311,7 @@ export default {
   // },
   methods: {
     getStates(countryId) {
-      alert(1);
+      //alert(countryId);
       var data = { countryId: countryId };
       //  axios.post("/api/fetch-states", data)
       //     .then(res) => {
@@ -324,10 +324,13 @@ export default {
       axios
         .post("/api/fetch-states", data)
         .then(function (response) {
+          this.states = response.data.states;
           console.log(response.data.states);
-          response.data.states.forEach(function (state, index) {
-            this.states.push(index);
-          });
+          console.log(this.states);
+
+          // response.data.states.forEach(function (state, index) {
+          //   //this.states.push(index);
+          // });
           //this.states = response.data.states;
         })
         .catch(function (error) {

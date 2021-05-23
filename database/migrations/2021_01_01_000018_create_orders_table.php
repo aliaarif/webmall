@@ -17,6 +17,8 @@ class CreateOrdersTable extends Migration
             $table->id()->comment('primary key');
             $table->unsignedInteger('user_id')->nullable()->comment('To store authenticated user id such as Banner/Applicant/User ID');
             $table->unsignedInteger('transaction_id')->nullable()->comment('To store Elavon transaction ID');
+            $table->unsignedInteger('address_id')->nullable()->comment('To store Default Shipping Address ID');
+            $table->unsignedInteger('card_id')->nullable()->comment('To store Default Card ID');
             $table->decimal('total', 50)->nullable()->comment('To store the total order amount');
             $table->string('module_name')->nullable()->comment('To store the module name ');
             $table->text('elavon_request')->nullable()->comment('To store the Elavon request params');
