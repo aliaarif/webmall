@@ -233,7 +233,15 @@
 import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  props: ["meta", "auth", "cartItems", "cartTotalQuantity", "countries"],
+  props: [
+    "meta",
+    "auth",
+    "cartItems",
+    "cartTotalQuantity",
+    "countries",
+    "states",
+    "cities",
+  ],
   components: {
     Layout,
   },
@@ -247,8 +255,8 @@ export default {
         (v && v.length <= 20) || "Person Name must be less than 20 characters",
     ],
 
-    states: [],
-    cities: [],
+    // states: [],
+    // cities: [],
 
     countrySelect: null,
     stateSelect: null,
@@ -324,13 +332,13 @@ export default {
       axios
         .post("/api/fetch-states", data)
         .then(function (response) {
-          this.states = response.data.states;
-          console.log(response.data.states);
-          console.log(this.states);
+          //this.states = response.data.states;
+          console.info(response.data.states);
+          //console.log(this.states);
 
-          // response.data.states.forEach(function (state, index) {
-          //   //this.states.push(index);
-          // });
+          response.data.states.forEach(function (state, index) {
+            //this.states.push(index);
+          });
           //this.states = response.data.states;
         })
         .catch(function (error) {

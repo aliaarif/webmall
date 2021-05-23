@@ -39,8 +39,8 @@ class AddressController extends Controller
         
         
         $countries = Country::with('states:id,name')->get();
-        // $states = State::with(['countries:id,name', 'cities:id,name'])->get();
-        // $cities = City::with(['countries:id,name', 'states:id,name'])->get();
+        //$states = State::with(['country', 'cities:id,name'])->get();
+        //$cities = City::with(['country', 'state'])->get();
         
         //dd($countries);
         
@@ -48,8 +48,8 @@ class AddressController extends Controller
             'meta' => $meta,
             'auth' => $user,
             'countries' => $countries,
-            // 'states' => $states,
-            // 'cities' => $cities,
+            //'states' => $states,
+            //'cities' => $cities,
             
         ];
         

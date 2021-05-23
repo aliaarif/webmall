@@ -9,14 +9,14 @@
       <v-carousel-item v-for="(slide, i) in slides" :key="i">
         <v-sheet :color="colors[i]" dark height="100%">
           <v-row class="fill-height" align="center" justify="center">
-            <div class="display-3">{{ slide }} Slide</div>
+            <div class="display-6">{{ slide }} Slide</div>
           </v-row>
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
 
     <div align="center" class="pa-1 d-flex justify-center text-h5">
-      Welcome to Webmall! A MultiSeller Ecommerce Platform 
+      Welcome to Webmall! A MultiSeller Ecommerce Platform
     </div>
     <p align="center" class="pa-1 d-flex justify-center">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -41,10 +41,7 @@
             :class="{ 'on-hover': hover }"
             class="mx-auto"
           >
-            <v-img
-              :aspect-ratio="16 / 9"
-              :src="product.cover_img"
-            >
+            <v-img :aspect-ratio="16 / 9" :src="product.cover_img">
               <v-expand-transition>
                 <div
                   v-if="hover"
@@ -135,13 +132,13 @@ export default {
     showMore(item) {
       this.showFor = item;
     },
-    addToCart(pid){
-      var data = { pid: pid};
-       Inertia.post("/add-to-cart", data, {
-          onSuccess: (res) => {},
-          onError: (errors) => {},
-        });
-    }
+    addToCart(pid) {
+      var data = { pid: pid };
+      Inertia.post("/add-to-cart", data, {
+        onSuccess: (res) => {},
+        onError: (errors) => {},
+      });
+    },
   },
 };
 </script>
