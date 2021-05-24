@@ -19,7 +19,10 @@
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.2",
-        "razorpay/razorpay": "^2.7"
+        "livewire/livewire": "^2.4",
+        "nicolaslopezj/searchable": "^1.13",
+        "orangehill/iseed": "^3.0",
+        "tcg/voyager": "^1.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

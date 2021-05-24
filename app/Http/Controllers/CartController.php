@@ -17,7 +17,7 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $product = Product::find($request->pid);
-
+        
         if($product){
             \Cart::session(session()->getId() ?? Auth::id())->add(array(
                 'id' => $product->id,
@@ -33,9 +33,9 @@ class CartController extends Controller
             return back()->with(['cartItems' => $cartItems]);
         }
     }
-
-
-
+    
+    
+    
     // update the product to cart
     public function update(Request $request)
     {
@@ -51,47 +51,47 @@ class CartController extends Controller
             return redirect()->route('cart.index');
         }
     }
-
-
+    
+    
     public function remove(Request $request)
     {
         // remove the product from cart
         \Cart::session(session()->getId() ?? Auth::id())->remove($request->pid);
         return redirect()->route('cart.index');
     }
-
-
+    
+    
     public function cart()
     {
-
+        
         $user = Auth::check() ? User::where('id', Auth::id())->with('roles')->first() : false;
         $meta = [
             'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
         
-
+        
         // view the cart items
         $items = \Cart::session(session()->getId() ?? Auth::id())->getContent();
         
-
+        
         $cartItemsArr = [];
         foreach($items as $row) {array_push($cartItemsArr, $row);}
         sort($cartItemsArr);
         $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
-
+        
         $data = [
             'meta' => $meta,
             'products' => Product::take(20)->get(),
             'auth' => $user,
             'cartItems' => $cartItemsArr,
             'cartTotalQuantity' => $cartTotalQuantity
-
+            
         ];
-
-
+        
+        
         return Inertia::render('Cart/Index', $data);
     }    
-
-
+    
+    
 }

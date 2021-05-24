@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class CreateUsersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
@@ -19,14 +19,15 @@ class CreateUsersTable extends Migration
             $table->string('name', 50)->nullable();
             $table->string('email', 50)->unique();
             $table->string('avatar')->nullable();
-            //$table->string('slug', 50)->unique();
+            $table->string('slug', 50)->unique();
             $table->string('username', 50)->nullable();
             $table->string('mobile', 10)->nullable();
-            //$table->string('barcode', 50)->nullable();
+            $table->string('barcode', 50)->nullable();
             $table->string('social', 50)->nullable();
-            $table->string('provider')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 100)->nullable();
             $table->string('provider_id')->nullable();
+            $table->string('provider')->nullable();
             $table->unsignedInteger('address_id')->nullable();
             $table->unsignedInteger('card_id')->nullable();
             $table->string('address')->nullable();
@@ -36,17 +37,17 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
-
-
-
+            
+            
+            
         });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('users');

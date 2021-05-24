@@ -40,6 +40,7 @@ Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.
 Route::get('/{slug}' , [WelcomeController::class,'details'])->where('slug', '!=', 'login')->name('details');
 
 Route::get('/address' , [AddressController::class,'address'])->name('address');
+Route::post('/save-address' , [AddressController::class,'saveAddress'])->name('address');
 
 
 Route::get('dashboard' , [WelcomeController::class,'dashboard'])->name('dashboard')->middleware('auth');
@@ -56,11 +57,11 @@ Route::prefix('sign-in')->group(function(){
 
 
 Route::middleware('auth')->group(function(){
-    Route::get('/checkout', [PaymentController::class, 'checkout']);
-
+    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('cart.checkout');
+    
     Route::post('/make-payment', [PaymentController::class, 'makePayment'])->name('razorpay.payment.store');;
-
-
-
+    
+    
+    
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('myorders');
 });

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Providers\RouteServiceProvider;
 
 use Illuminate\Validation\ValidationException;
+use App\Models\Address;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
@@ -55,4 +56,18 @@ class AddressController extends Controller
         
         return Inertia::render('Address/Index', $data);
     }
+    
+    
+    public function saveAddress(Request $request)
+    {
+        //dd(1);
+        
+        $address = new Address();
+        $address->user_id = Auth::id();
+        $address->type = $request->addressType;
+        $address->person_name = $request->personName;
+        $address->save();
+        return redirect()->route('cart.checkout');
+    }
+    
 }

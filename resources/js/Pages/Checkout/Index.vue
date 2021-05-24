@@ -1,138 +1,6 @@
 <template>
   <layout :meta="meta" :auth="auth" :cartItems="cartTotalQuantity">
-    <v-row>
-      <v-col cols="12" sm="5">
-        <v-card class="pa-2" elevation="2" outlined shaped>
-          <p class="overline text-h6">Your Cart Items</p>
-
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">Name</th>
-                  <th class="text-left">Price</th>
-                  <th class="text-left">Quantity</th>
-                  <th class="text-left">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="product in cartItems" :key="product.id">
-                  <td>
-                    <v-avatar class="mr-1">
-                      <span>
-                        <v-img
-                          :src="product.attributes['cover_img']"
-                          width="150"
-                        />
-                      </span>
-                    </v-avatar>
-                    {{ product.name }}
-                  </td>
-                  <td>{{ product.price }}</td>
-                  <td>{{ product.quantity }}</td>
-                  <td>{{ product.price * product.quantity }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" sm="4">
-        <v-card class="pa-2" elevation="2" outlined shaped>
-          <p class="overline text-h6">
-            Select a shipping address
-            <v-icon
-              aria-hidden="false"
-              @click="openAddressModal()"
-              color="primary"
-              class="ml-2"
-              >mdi-plus</v-icon
-            >
-          </p>
-          <v-list two-line>
-            <v-list-item-group
-              v-model="selectedAddress"
-              active-class="primary--text"
-            >
-              <template v-for="(address, index) in addresses">
-                <v-list-item :key="address.id">
-                  <template v-slot:default="{ active }">
-                    <v-list-item-content>
-                      <v-list-item-title
-                        v-text="address.person_name"
-                      ></v-list-item-title>
-                      <v-list-item-subtitle
-                        v-text="address.subtitle"
-                      ></v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-list-item-action-text>
-                        <v-icon v-if="active" color="primary lighten-4">
-                          checked
-                        </v-icon>
-                      </v-list-item-action-text>
-                    </v-list-item-action>
-                  </template>
-                </v-list-item>
-                <v-divider
-                  v-if="index < addresses.length - 1"
-                  :key="index"
-                ></v-divider>
-              </template>
-            </v-list-item-group>
-          </v-list>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="3">
-        <v-card class="pa-2" elevation="2" outlined shaped>
-          <p class="overline text-h6">
-            Select a card
-            <v-icon
-              aria-hidden="false"
-              @click="addCard()"
-              color="primary"
-              class="ml-2"
-              >mdi-plus</v-icon
-            >
-          </p>
-          <v-list two-line>
-            <v-list-item-group
-              v-model="selectedCard"
-              active-class="primary--text"
-            >
-              <template v-for="(card, index) in cards">
-                <v-list-item :key="card.id">
-                  <template v-slot:default="{ active }">
-                    <v-list-item-content>
-                      <v-list-item-title
-                        v-text="card.person_name"
-                      ></v-list-item-title>
-                      <v-list-item-subtitle
-                        v-text="card.number"
-                      ></v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-list-item-action-text>
-                        <v-icon v-if="active" color="primary lighten-4">
-                          checked
-                        </v-icon>
-                      </v-list-item-action-text>
-                    </v-list-item-action>
-                  </template>
-                </v-list-item>
-                <v-divider
-                  v-if="index < cards.length - 1"
-                  :key="index"
-                ></v-divider>
-              </template>
-            </v-list-item-group>
-          </v-list>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row justify="center">
+    <v-row justify="center" class="mt-1">
       <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -170,7 +38,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <!-- <v-col cols="12" sm="6">
                   <v-autocomplete
                     label="Country"
                     hint="Please select a country"
@@ -183,6 +51,7 @@
                     cache-items
                     flat
                     hide-no-data
+                    @click="getStates(items.id)"
                   ></v-autocomplete>
                 </v-col>
 
@@ -230,7 +99,7 @@
                     type="text"
                     required
                   ></v-text-field>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-card-text>
             <v-card-actions>
@@ -252,8 +121,165 @@
       </v-dialog>
     </v-row>
 
-    <v-btn color="success" @click="makePayment()"> Place Your Order </v-btn>
-    <div id="gist"></div>
+    <v-card>
+      <v-toolbar flat color="primary" dark>
+        <v-toolbar-title>Cart and shipping details</v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <v-btn color="success" right @click="makePayment()">
+          Place Your Order
+        </v-btn>
+      </v-toolbar>
+      <v-tabs vertical>
+        <v-tab>
+          <v-icon left> mdi-cart </v-icon>
+          Cart Items
+        </v-tab>
+
+        <v-tab>
+          <v-icon left> mdi-map </v-icon>
+          &nbsp;&nbsp;Address&nbsp;&nbsp;
+        </v-tab>
+
+        <v-tab>
+          <v-icon left> mdi-cards </v-icon>
+          Your Cards
+        </v-tab>
+
+        <v-tab-item>
+          <v-card flat>
+            <v-card-text>
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">Name</th>
+                      <th class="text-left">Price</th>
+                      <th class="text-left">Quantity</th>
+                      <th class="text-left">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="product in cartItems" :key="product.id">
+                      <td>
+                        <v-avatar class="mr-1">
+                          <span>
+                            <v-img
+                              :src="product.attributes['cover_img']"
+                              width="150"
+                            />
+                          </span>
+                        </v-avatar>
+                        {{ product.name }}
+                      </td>
+                      <td>{{ product.price }}</td>
+                      <td>{{ product.quantity }}</td>
+                      <td>{{ product.price * product.quantity }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card flat>
+            <v-card-text class="pa-2" elevation="2" outlined shaped>
+              <p class="text-h6">
+                Select a shipping address
+                <v-icon
+                  aria-hidden="false"
+                  @click="openAddressModal()"
+                  color="primary"
+                  class="ml-2"
+                  >mdi-plus</v-icon
+                >
+              </p>
+              <v-list two-line>
+                <v-list-item-group
+                  v-model="selectedAddress"
+                  active-class="primary--text"
+                >
+                  <template v-for="(address, index) in addresses">
+                    <v-list-item :key="address.id">
+                      <template v-slot:default="{ active }">
+                        <v-list-item-content>
+                          <v-list-item-title
+                            v-text="address.person_name"
+                          ></v-list-item-title>
+                          <v-list-item-subtitle
+                            v-text="address.subtitle"
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                          <v-list-item-action-text>
+                            <v-icon v-if="active" color="primary lighten-4">
+                              checked
+                            </v-icon>
+                          </v-list-item-action-text>
+                        </v-list-item-action>
+                      </template>
+                    </v-list-item>
+                    <v-divider
+                      v-if="index < addresses.length - 1"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list-item-group>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card flat>
+            <v-card-text class="pa-2" elevation="2" outlined shaped>
+              <p class="text-h6">
+                Select a card
+                <v-icon
+                  aria-hidden="false"
+                  @click="addCard()"
+                  color="primary"
+                  class="ml-2"
+                  >mdi-plus</v-icon
+                >
+              </p>
+              <v-list two-line>
+                <v-list-item-group
+                  v-model="selectedCard"
+                  active-class="primary--text"
+                >
+                  <template v-for="(card, index) in cards">
+                    <v-list-item :key="card.id">
+                      <template v-slot:default="{ active }">
+                        <v-list-item-content>
+                          <v-list-item-title
+                            v-text="card.person_name"
+                          ></v-list-item-title>
+                          <v-list-item-subtitle
+                            v-text="card.number"
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                          <v-list-item-action-text>
+                            <v-icon v-if="active" color="primary lighten-4">
+                              checked
+                            </v-icon>
+                          </v-list-item-action-text>
+                        </v-list-item-action>
+                      </template>
+                    </v-list-item>
+                    <v-divider
+                      v-if="index < cards.length - 1"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list-item-group>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
+    </v-card>
   </layout>
 </template>
 
@@ -266,7 +292,14 @@ import Layout from "../../Shared/Layout";
 import { Inertia } from "@inertiajs/inertia";
 
 export default {
-  props: ["meta", "auth", "cartItems", "cartTotalQuantity"],
+  props: [
+    "meta",
+    "auth",
+    "cartItems",
+    "cartTotalQuantity",
+    "countries",
+    "addresses",
+  ],
   components: {
     Layout,
   },
@@ -279,74 +312,27 @@ export default {
       (v) =>
         (v && v.length <= 20) || "Person Name must be less than 20 characters",
     ],
-    countrySelect: null,
-    stateSelect: null,
-    citySelect: null,
-    pin: null,
-    flatNo: null,
+    // countrySelect: null,
+    // stateSelect: null,
+    // citySelect: null,
+    // pin: null,
+    // flatNo: null,
 
-    countryModalLoading: false,
-    stateModalLoading: false,
-    cityModalLoading: false,
+    // countryModalLoading: false,
+    // stateModalLoading: false,
+    // cityModalLoading: false,
 
-    countrySearch: null,
-    stateSearch: null,
-    citySearch: null,
+    // countrySearch: null,
+    // stateSearch: null,
+    // citySearch: null,
 
-    countries: [
-      "Alabama",
-      "Alaska",
-      "American Samoa",
-      "Arizona",
-      "Arkansas",
-      "California",
-      "Colorado",
-      "Connecticut",
-      "Delaware",
-    ],
-    states: [
-      "Alabama",
-      "Alaska",
-      "American Samoa",
-      "Arizona",
-      "Arkansas",
-      "California",
-      "Colorado",
-      "Connecticut",
-      "Delaware",
-    ],
-    cities: [
-      "Alabama",
-      "Alaska",
-      "American Samoa",
-      "Arizona",
-      "Arkansas",
-      "California",
-      "Colorado",
-      "Connecticut",
-      "Delaware",
-    ],
+    // states: [],
+    // cities: [],
 
     dialog: false,
     selectedAddress: true,
     selectedCard: true,
-    addresses: [
-      {
-        person_name: "Ali Connors",
-        headline: "Brunch this weekend?",
-        subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-      },
-      {
-        person_name: "me, Scrott, Jennifer",
-        headline: "Summer BBQ",
-        subtitle: `Wish I could come, but I'm out of town this weekend.`,
-      },
-      {
-        person_name: "Sandra Adams",
-        headline: "Oui oui",
-        subtitle: "Do you have Paris recommendations? Have you ever been?",
-      },
-    ],
+
     cards: [
       {
         person_name: "Ali Connors",
@@ -402,35 +388,33 @@ export default {
     openAddressModal() {
       $("#addAddressModal").trigger("click");
     },
+    getStates(countryId) {
+      alert(countryId);
+    },
     saveAddress() {
       this.$refs.form.validate();
 
-      let validate =
-        this.addressType !== "" &&
-        this.personName !== "" &&
-        this.countrySelect !== "" &&
-        this.stateSelect !== "" &&
-        this.citySelect !== "" &&
-        this.pin !== "" &&
-        this.flatNo
-          ? true
-          : false;
+      let validate = this.addressType !== "" && this.personName !== "";
+      // this.countrySelect !== "" &&
+      // this.stateSelect !== "" &&
+      // this.citySelect !== "" &&
+      // this.pin !== "" &&
+      // this.flatNo
+      //   ? true
+      //   : false;
       if (validate) {
         var data = {
           addressType: this.addressType,
           personName: this.personName,
-          countrySelect: this.countrySelect,
-          stateSelect: this.stateSelect,
-          citySelect: this.citySelect,
-          pin: this.pin,
-          flatNo: this.flatNo,
+          //countrySelect: this.countrySelect,
+          // stateSelect: this.stateSelect,
+          // citySelect: this.citySelect,
+          // pin: this.pin,
+          // flatNo: this.flatNo,
         };
-        Inertia.post("/login", data, {
+        Inertia.post("/save-address", data, {
           onSuccess: () => {
             // Handle success event
-            this.responseStatus === false
-              ? (this.error = true)
-              : this.responseStatus;
           },
           onError: (errors) => {
             // Handle validation errors

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Country;
+use App\Models\Address;
 use Razorpay\Api\Api;
 use Exception;
 use Session;
@@ -32,12 +34,19 @@ class PaymentController extends Controller
     foreach($items as $row) {array_push($cartItems, $row);}
     sort($cartItems);
     $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
+    $countries = Country::with('states:id,name')->get();
+    $addresses = Address::where('user_id', Auth::id())->get();
     
+    //dd($addresses);
+    
+    //dd($countries);
     $data = [
       'meta' => $meta,
       'auth' => $user,
       'cartItems' => $cartItems,
-      'cartTotalQuantity' => $cartTotalQuantity
+      'cartTotalQuantity' => $cartTotalQuantity,
+      'countries' => $countries,
+      'addresses' => $addresses
     ];
     return Inertia::render('Checkout/Index', $data);
   }
@@ -55,9 +64,7 @@ class PaymentController extends Controller
       //   )
       //   Session::put('success', 'Payment successful');
       
-      
-      
-      $user =  User::where('id', Auth::id())->with(['roles', 'address', 'card'])->first();
+      $user =  User::where('id', Auth::id())->with(['roles', 'addresses', 'cards'])->first();
       
       dd($user);
       // $items = \Cart::session(session()->getId() ?? Auth::id())->getContent();

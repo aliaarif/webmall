@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\UserDetail;
+use App\Models\Address;
+use App\Models\Card;
 use App\Models\LibraryPayment;
 use Laravel\Cashier\Billable;
 
@@ -51,18 +53,17 @@ class User extends Authenticatable
   }
   
   
+  public function cards()
+  {
+    return $this
+    ->belongsToMany('App\Models\Card');
+  }
+  
+  
   public function roles()
   {
     return $this
     ->belongsToMany('App\Models\Role')
-    ->withTimestamps();
-  }
-  
-  
-  public function users()
-  {
-    return $this
-    ->belongsToMany('App\Models\User')
     ->withTimestamps();
   }
   

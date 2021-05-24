@@ -42,7 +42,7 @@ class WelcomeController extends Controller
             'title' => env('APP_NAME', 'Application') . ' | Home',
             'description' => 'This is dummy description for the Application from dynamic'
         ];
-        $cartTotalQuantity = \Cart::session(session()->getId() ?? Auth::id())->getTotalQuantity() ?? 0;
+        $cartTotalQuantity = \Cart::session(session()->getId())->getTotalQuantity() ?? 0;
         
         
         $data = [

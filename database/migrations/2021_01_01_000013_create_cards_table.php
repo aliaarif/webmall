@@ -7,10 +7,10 @@ use Illuminate\Database\Migrations\Migration;
 class CreateCardsTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('cards', function (Blueprint $table) {
@@ -18,20 +18,20 @@ class CreateCardsTable extends Migration
             $table->id();
             $table->unsignedInteger('user_id')->nullable();
             $table->enum('type', ['credit', 'debit', 'saving', 'master'])->default('debit');
-            $table->string('provider');
-            $table->string('name_on_card');
-            $table->string('expired_in');
-            $table->string('cvv');
+            $table->string('provider')->nullable();
+            $table->string('name_on_card')->nullable();
+            $table->string('expired_in')->nullable();
+            $table->string('cvv')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('cards');

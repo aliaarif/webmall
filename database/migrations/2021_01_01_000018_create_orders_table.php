@@ -15,18 +15,34 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id()->comment('primary key');
-            $table->unsignedInteger('user_id')->nullable()->comment('To store authenticated user id such as Banner/Applicant/User ID');
-            $table->unsignedInteger('transaction_id')->nullable()->comment('To store Elavon transaction ID');
-            $table->unsignedInteger('address_id')->nullable()->comment('To store Default Shipping Address ID');
-            $table->unsignedInteger('card_id')->nullable()->comment('To store Default Card ID');
-            $table->decimal('total', 50)->nullable()->comment('To store the total order amount');
-            $table->string('module_name')->nullable()->comment('To store the module name ');
-            $table->text('elavon_request')->nullable()->comment('To store the Elavon request params');
-            $table->text('elavon_response')->nullable()->comment('To store the Elavon response');
+            $table->string('order_number');
+            $table->string('paypal_orderid')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->enum('status', ['pending','processing','completed','decline'])->default('pending');
+            $table->float('grand_total');
+            $table->integer('item_count');
+            $table->boolean('is_paid')->default(false);
+            $table->enum('payment_method', ['cash_on_delivery', 'paypal','stripe','card'])->default('cash_on_delivery');
+            
+            $table->string('shipping_fullname');
+            $table->string('shipping_address');
+            $table->string('shipping_city');
+            $table->string('shipping_state');
+            $table->string('shipping_zipcode');
+            $table->string('shipping_phone');
+            $table->string('notes')->nullable();
+            
+            $table->string('billing_fullname');
+            $table->string('billing_address');
+            $table->string('billing_city');
+            $table->string('billing_state');
+            $table->string('billing_zipcode');
+            $table->string('billing_phone');
             $table->string('payment_status')->default('Pending')->comment('to store the elevon payment status');
             $table->string('booking_status')->default('Pending')->comment('to store the booking status');
             $table->enum('payment_mode', ['Free', 'Internal Trading', 'Online', 'PDQ', 'Purchase Order'])->nullable()->default('Online')->comment('to store the payment mode');
             $table->string('ip_address', 50)->nullable()->comment('To store the IP address of client machine');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
